@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Практическая работа</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="static/style.css">
+</head>
+<body>
+	<main>
+		<div class="title_page">
+			<p>
+				ДЕПАРТАМЕНТ ПРОФЕССИОНАЛЬНОГО ОБРАЗОВАНИЯ<br/>
+				ТОМСКОЙ ОБЛАСТИ<br/>
+				ОБЛАСТНОЕ ГОСУДАРСТВЕННОЕ БЮДЖЕТНОЕ ПРОФЕССИОНАЛЬНОЕ ОБРАЗОВАТЕЛЬНОЕ
+				УЧРЕЖДЕНИЕ<br/>
+				«ТОМСКИЙ ТЕХНИКУМ ИНФОРМАЦИОННЫХ ТЕХНОЛОГИЙ»
+			</p>
+
+			<p class="discipline">Специальность 090207 «Информационные системы и программирование»</p>
+
+			<p class="title_work">
+				Отчет по практической работе №1<br/>
+				учебной дисциплины<br/>
+				УП 09 «Программирование на стороне клиента»<br/>
+				Тема: «Создание приложения “Список покупок” на языке
+				JavaScript с использованием фреймворка Vue.js»
+			</p>
+
+			<div class="signature">
+				<table>
+					<tr>
+						<td>Студент<br/>«__»________ 2021 г.</td>
+						<td>_________________</td>
+						<td>Кулманаков И.В.</td>
+					</tr>
+					<tr>
+						<td>Руководитель<br/>«__»________ 2021 г.</td>
+						<td>_________________</td>
+						<td>Гаврюшков Н.М.</td>
+					</tr>
+				</table>
+			</div>
+
+			<p>Томск 2021</p><div></div>
+		</div>
+
+		<div>
+			<h2>Содержание</h2>
+			
+			<p id="table_contents"></p>
+		</div>
+
+		<div>
+			<h2>Введение</h2>
+
+			<h3>Цель</h3>
+			<p>
+				Научиться основным способам тестирования веб-приложений
+			</p>
+			<h3>Задание</h3>
+			<p>
+				Используя полученные ранее знания, реализуйте с помощью Vue
+				простейшее приложение, позволяющее формировать список покупок.
+			</p>
+			<p>
+				Задачи:
+				<ol>
+					<li>ввод имени пользователя</li>
+					<li>добавление нового пункта в список покупок</li>
+					<li>в зависимости от введенных данных формируется список покупок</li>
+					<li>удаление покупки из списка</li>
+					<li>при клике на покупку в списке она отмечается зачеркнутой</li>
+				</ol>
+			</p>
+		</div>
+		
+		<div>
+			<h2>Файлы</h2>
+			<h3>Файл главной страницы</h3>
+			<div class="img">
+				<pre>
+&lt;!doctype html&gt;
+&lt;html lang=&quot;ru&quot; xmlns:v-on=&quot;http://www.w3.org/1999/xhtml&quot;
+	xmlns:v-bind=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+	&lt;meta charset=&quot;UTF-8&quot;&gt;
+	&lt;meta name=&quot;viewport&quot;
+	content=&quot;width=device-width, user-scalable=no, initial-scale=1.0,
+		maximum-scale=1.0, minimum-scale=1.0&quot;&gt;
+	&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;
+	&lt;title&gt;Даб 1&lt;/title&gt;
+	&lt;script src=&quot;js/vue.js&quot; defer&gt;&lt;/script&gt;
+	&lt;script src=&quot;js/main.js&quot; defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;div id=&quot;username&quot;&gt;
+		&lt;div v-if=&quot;login&quot;&gt;
+			&lt;h1&gt;Имя пользователя&lt;/h1&gt;
+			&lt;p&gt;(--{{message}}--)&lt;/p&gt;
+			&lt;input v-model=&quot;message&quot;&gt;
+			&lt;button v-on:click=&quot;loginGo&quot;&gt;Вход&lt;/button&gt;
+		&lt;/div&gt;
+		&lt;div v-if=&quot;!login&quot;&gt;
+			&lt;h1&gt;Список пользователя {{message}}.&lt;/h1&gt;
+			&lt;input v-model=&quot;pinToPush&quot;&gt;
+			&lt;button v-on:click=&quot;pushGo&quot;&gt;Добавить&lt;/button&gt;
+			&lt;ol&gt;
+				&lt;todo-item
+						v-for=&quot;item in list&quot;
+						v-bind:todo=&quot;item&quot;
+						v-bind:key=&quot;item.id&quot;
+				&gt;&lt;/todo-item&gt;
+			&lt;/ol&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+				<p>imdex.html</p>
+			</div>
+
+			<h3>Файл главного скрипта</h3>
+			<div class="img">
+				<pre>
+let username = new Vue({
+	el: &quot;#username&quot;,
+	data: {
+		login: true,
+		message: &quot;&quot;,
+		pinToPush: &quot;&quot;,
+		list: [],
+	},
+	methods:
+	{
+		loginGo: function () {
+			this.login = false;
+		},
+		pushGo: function(){
+			this.list.push(this.pinToPush);
+		}
+	},
+});
+
+Vue.component(&quot;todo-item&quot;, {
+	props: [&quot;todo&quot;],
+	data: function()
+	{
+		return {
+			exist: true,
+			line: false,
+		}
+	},
+	template:
+		'&lt;li v-if=&quot;exist&quot;&gt;' +
+		'&lt;span v-on:click=&quot;lineGo&quot;&gt;' +
+		'&lt;span v-if=&quot;!line&quot;&gt;{{todo}}&lt;/span&gt;' +
+		'&lt;del v-if=&quot;line&quot;&gt;{{todo}}&lt;/del&gt;' +
+		'&lt;/span&gt;' +
+		'&lt;button v-on:click=&quot;deleteGo&quot;&gt;Удалить&lt;/button&gt;' +
+		'&lt;/li&gt;',
+	methods:
+	{
+		deleteGo: function(){
+			this.exist = false;
+		},
+		lineGo: function(){
+			this.line = !this.line;
+		}
+	},
+});</pre>
+				<p>js/main.js</p>
+			</div>
+		</div>
+		<div>
+			<h2>Результаты работы программы</h2>
+			<h3>Ввод имени пользователя</h3>
+			<p>
+				<div class="img">
+					<img src="img/1.png">
+					<p>Ввод имени пользователя</p>
+				</div>
+			</p>
+
+			<h3>Работа со списком</h3>
+			<p>
+				<div class="img">
+					<img src="img/2.png">
+					<p>Список, с которым работали</p>
+				</div>
+				<div class="img">
+					<img src="img/2.2.png">
+					<p>Удаление элемента</p>
+				</div>
+			</p>
+		</div>
+
+		<div>
+			<h2>Вывод</h2>
+			<p>
+				В ходе выполнения практической работы были получены знания
+				о реализации с помощью Vue простого приложения.
+			</p>
+		</div>
+	</main>
+	<script src="static/main.js"></script>
+</body>
+</html>
