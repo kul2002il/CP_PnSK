@@ -1,17 +1,53 @@
 <!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Даб 1</title>
-    <script src="js/vue.js" defer></script>
-    <script src="js/main.js" defer></script>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Даб 1</title>
+	<script src="js/vue.js" defer></script>
+	<script src="js/main.js" defer></script>
 </head>
 <body>
-    <div id="app">
-        {{message}}
-    </div>
+	<div id="app">
+		{{message}}
+	</div>
+
+	<div id="app2">
+		<span v-bind:title="message">
+			Наведи на меня курсор.
+		</span>
+	</div>
+
+	<div id="app3">
+		<span v-if="seen">Возможно, сейчас этот элемент виден.</span>
+	</div>
+
+	<div id="app4">
+		<ol>
+			<li v-for="pin in todo">{{pin.text}}</li>
+		</ol>
+	</div>
+
+	<div id="app5">
+		<p>{{message}}</p>
+		<button v-on:click="reverse">Перевернкть сообщение.</button>
+	</div>
+
+	<div id="app6">
+		<p>{{message}}</p>
+		<input v-model="message">
+	</div>
+
+	<div id="app7">
+		<ol>
+			<todo-item
+					v-for="item in list"
+					v-bind:todo="item"
+					v-bind:key="item.id"
+			></todo-item>
+		</ol>
+	</div>
 </body>
 </html>
