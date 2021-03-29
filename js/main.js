@@ -1,4 +1,4 @@
-
+/*
 let app = new Vue({
 	el: "#app",
 	data: {
@@ -47,23 +47,58 @@ let app5 = new Vue({
 		reverse: function () {
 			this.message = this.message.split('').reverse().join("");
 		}
-	}
+	},
 });
+*/
 
-
-let app6 = new Vue({
-	el: "#app6",
+let username = new Vue({
+	el: "#username",
 	data: {
-		message: "Третье начало.",
+		login: true,
+		message: "",
+		pinToPush: "",
+		list: [],
+	},
+	methods:
+	{
+		loginGo: function () {
+			this.login = false;
+		},
+		pushGo: function(){
+			this.list.push(this.pinToPush);
+		}
 	},
 });
 
-
 Vue.component("todo-item", {
 	props: ["todo"],
-	template: "<li>Задача {{todo.text}}</li>",
+	data: function()
+	{
+		return {
+			exist: true,
+			line: false,
+		}
+	},
+	template:
+		'<li v-if="exist">' +
+		'<span v-on:click="lineGo">' +
+		'<span v-if="!line">{{todo}}</span>' +
+		'<del v-if="line">{{todo}}</del>' +
+		'</span>' +
+		'<button v-on:click="deleteGo">Удалить</button>' +
+		'</li>',
+	methods:
+	{
+		deleteGo: function(){
+			this.exist = false;
+		},
+		lineGo: function(){
+			this.line = !this.line;
+		}
+	},
 });
 
+/*
 let app7 = new Vue({
 	el: "#app7",
 	data: {
@@ -83,3 +118,4 @@ let app7 = new Vue({
 		],
 	},
 });
+*/

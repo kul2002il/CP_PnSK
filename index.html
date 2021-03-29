@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport"
@@ -10,6 +10,7 @@
 	<script src="js/main.js" defer></script>
 </head>
 <body>
+<!--
 	<div id="app">
 		{{message}}
 	</div>
@@ -34,20 +35,28 @@
 		<p>{{message}}</p>
 		<button v-on:click="reverse">Перевернкть сообщение.</button>
 	</div>
+-->
 
-	<div id="app6">
-		<p>{{message}}</p>
-		<input v-model="message">
+	<div id="username">
+		<div v-if="login">
+			<h1>Имя пользователя</h1>
+			<p>(--{{message}}--)</p>
+			<input v-model="message">
+			<button v-on:click="loginGo">Вход</button>
+		</div>
+		<div v-if="!login">
+			<h1>Список пользователя {{message}}.</h1>
+			<input v-model="pinToPush">
+			<button v-on:click="pushGo">Добавить</button>
+			<ol>
+				<todo-item
+						v-for="item in list"
+						v-bind:todo="item"
+						v-bind:key="item.id"
+				></todo-item>
+			</ol>
+		</div>
 	</div>
 
-	<div id="app7">
-		<ol>
-			<todo-item
-					v-for="item in list"
-					v-bind:todo="item"
-					v-bind:key="item.id"
-			></todo-item>
-		</ol>
-	</div>
 </body>
 </html>
