@@ -36,6 +36,17 @@
 			<h2>Имя пользователя 2</h2>
 			<p>(--{{username2}}--)</p>
 			<input v-model="username2"><br>
+			<input v-model="isWishComp" type="checkbox" id="isWishComp">
+			<label for="isWishComp">Игра с компьютером</label><br>
+
+			<h2>Размер поля</h2>
+			<input type="number" v-model="cols" placeholder="Ширина"><br>
+			<input type="number" v-model="rows" placeholder="Высота"><br>
+			<p>Поле {{cols}} на {{rows}}</p>
+
+			<h2>Условие выигрыша</h2>
+			<p>Клеток подряд, необходимых для выигрыша</p>
+			<input type="number" v-model="numberInLine" placeholder="Клетки"><br>
 
 			<button v-on:click="loginGo">Играть</button>
 		</div>

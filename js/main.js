@@ -1,32 +1,29 @@
 
-let area =
-[
-	[
-		{text: "_",},
-		{text: "_",},
-		{text: "_",},
-	],
-	[
-		{text: "_",},
-		{text: "_",},
-		{text: "_",},
-	],
-	[
-		{text: "_",},
-		{text: "_",},
-		{text: "_",},
-	],
-];
+let area = [[]];
 
 let data = {
 	username1: "Пупа",
 	username2: "Лупа",
+	isWishComp: false,
 	stepUser1: true,
 	stepGame: 'login',
 	win: "",
 	area: area,
 	numberInLine: 3,
+	rows: 3,
+	cols: 3,
 };
+
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function computerClick() {
+	let buttons = document.querySelectorAll("button");
+	buttons[getRandomInt(0, buttons.length)].click();
+}
 
 function checkWin(charPlayer)
 {
@@ -38,8 +35,8 @@ function checkWin(charPlayer)
 		lu_ru: {down: 0, right: 1},
 	};
 	let limit = data.numberInLine;
-	let wigth = area[0].length;
-	let height = area.length;
+	let wigth = data.cols;
+	let height = data.rows;
 
 	startsCoor = [];
 	for(let i = 0; i < height; i++)
@@ -71,6 +68,10 @@ function checkWin(charPlayer)
 							return true;
 						}
 					}
+					else
+					{
+						count = 0;
+					}
 					y += directions[direct].down;
 					x += directions[direct].right;
 				}
@@ -101,6 +102,21 @@ let game = new Vue({
 	methods:
 	{
 		loginGo: function () {
+			// Установка поля
+			let template = {text: "_",};
+			let rowTemplate = [];
+			//area = [];
+			for (let i = 0; i < this.cols; i++)
+			{
+				rowTemplate.push(Object.assign({}, template))
+			}
+			let srtTem = JSON.stringify(rowTemplate);
+			for (let i = 0; i < this.rows; i++)
+			{
+				area.push(JSON.parse(srtTem));
+			}
+			area.shift();
+
 			this.stepGame = 'game';
 		},
 	},
@@ -126,12 +142,17 @@ Vue.component("area-field", {
 			if(data.stepUser1)
 			{
 				this.field.text = "X";
+				data.stepUser1 = !data.stepUser1;
+				if(data.isWishComp)
+				{
+					computerClick();
+				}
 			}
 			else
 			{
+				data.stepUser1 = !data.stepUser1;
 				this.field.text = "O";
 			}
-			data.stepUser1 = !data.stepUser1;
 		}
 	},
 	template:
