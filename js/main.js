@@ -1,77 +1,118 @@
-/*
-let app = new Vue({
-	el: "#app",
-	data: {
-		message: "Начало.",
-	},
-});
 
+let area =
+[
+	[
+		{text: "_",},
+		{text: "_",},
+		{text: "_",},
+	],
+	[
+		{text: "_",},
+		{text: "_",},
+		{text: "_",},
+	],
+	[
+		{text: "_",},
+		{text: "_",},
+		{text: "_",},
+	],
+];
 
-let app2 = new Vue({
-	el: "#app2",
-	data: {
-		message: "Вы загрузили эту страницу: " + new Date().toLocaleString(),
-	},
-});
+let data = {
+	username1: "Пупа",
+	username2: "Лупа",
+	stepUser1: true,
+	stepGame: 'login',
+	win: "",
+	area: area,
+	numberInLine: 3,
+};
 
-
-let app3 = new Vue({
-	el: "#app3",
-	data: {
-		seen: true,
-	},
-});
-
-
-let app4 = new Vue({
-	el: "#app4",
-	data: {
-		todo:
-		[
-			{text: "Начать"},
-			{text: "Продолжить"},
-			{text: "Закончить"},
-		],
-	},
-});
-
-
-let app5 = new Vue({
-	el: "#app5",
-	data:
+function checkWin(charPlayer)
+{
+	let directions =
 	{
-		message: "Другое начало.",
-	},
-	methods:
+		lu_rd: {down: 1, right: 1},
+		ru_ld: {down: 1, right: -1},
+		lu_ld: {down: 1, right: 0},
+		lu_ru: {down: 0, right: 1},
+	};
+	let limit = data.numberInLine;
+	let wigth = area[0].length;
+	let height = area.length;
+
+	startsCoor = [];
+	for(let i = 0; i < height; i++)
 	{
-		reverse: function () {
-			this.message = this.message.split('').reverse().join("");
+		startsCoor.push({y: i,x: 0});
+		startsCoor.push({y: i,x: wigth-1});
+	}
+	for(let i = 0; i < wigth; i++)
+	{
+		startsCoor.push({y: 0,x: i});
+	}
+
+	for(let start in startsCoor)
+	{
+		for(let direct in directions)
+		{
+			let y = startsCoor[start].y;
+			let x = startsCoor[start].x;
+			let count = 0;
+			try
+			{
+				while(1)
+				{
+					if(area[y][x].text === charPlayer)
+					{
+						count++;
+						if(count >= limit)
+						{
+							return true;
+						}
+					}
+					y += directions[direct].down;
+					x += directions[direct].right;
+				}
+			}
+			catch (e){}
 		}
-	},
-});
-*/
+	}
+	return false;
+}
 
-let username = new Vue({
-	el: "#username",
-	data: {
-		login: true,
-		message: "",
-		pinToPush: "",
-		list: [],
+let game = new Vue({
+	el: "#game",
+	data: data,
+	updated: function()
+	{
+		//Заканчивание игры
+		if(checkWin("X"))
+		{
+			data.win = 1;
+			data.stepGame = 'win';
+		}
+		else if(checkWin("O"))
+		{
+			data.win = 2;
+			data.stepGame = 'win';
+		}
 	},
 	methods:
 	{
 		loginGo: function () {
-			this.login = false;
+			this.stepGame = 'game';
 		},
-		pushGo: function(){
-			this.list.push(this.pinToPush);
-		}
 	},
 });
 
-Vue.component("todo-item", {
-	props: ["todo"],
+Vue.component("area-row", {
+	props: ["row"],
+	template: '<div class="row"><area-field v-for="field in row" v-bind:field="field" :key="field.id"></area-field></div>',
+});
+
+Vue.component("area-field", {
+	props: ["field"],
 	data: function()
 	{
 		return {
@@ -79,43 +120,23 @@ Vue.component("todo-item", {
 			line: false,
 		}
 	},
-	template:
-		'<li v-if="exist">' +
-		'<span v-on:click="lineGo">' +
-		'<span v-if="!line">{{todo}}</span>' +
-		'<del v-if="line">{{todo}}</del>' +
-		'</span>' +
-		'<button v-on:click="deleteGo">Удалить</button>' +
-		'</li>',
 	methods:
 	{
-		deleteGo: function(){
-			this.exist = false;
-		},
-		lineGo: function(){
-			this.line = !this.line;
+		stepGo: function () {
+			if(data.stepUser1)
+			{
+				this.field.text = "X";
+			}
+			else
+			{
+				this.field.text = "O";
+			}
+			data.stepUser1 = !data.stepUser1;
 		}
 	},
+	template:
+'<div class="field">\
+<span v-if="field.text===\'_\'"><button @click="stepGo">u</button></span>\
+<span v-else>{{field.text}}</span>\
+</div>',
 });
-
-/*
-let app7 = new Vue({
-	el: "#app7",
-	data: {
-		list: [
-			{
-				id: 0,
-				text: "Текст0",
-			},
-			{
-				id: 1,
-				text: "Текст1",
-			},
-			{
-				id: 2,
-				text: "Текст2",
-			},
-		],
-	},
-});
-*/

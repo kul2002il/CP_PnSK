@@ -8,53 +8,55 @@
 	<title>Даб 1</title>
 	<script src="js/vue.js" defer></script>
 	<script src="js/main.js" defer></script>
+	<style>
+		.field{
+			display: inline-block;
+			width: 30px;
+			height: 30px;
+			margin: 0;
+			border: 1px solid black;
+			text-align: center;
+		}
+		.player1{
+			color: blue;
+		}
+		.player2{
+			color: green;
+		}
+	</style>
 </head>
 <body>
-<!--
-	<div id="app">
-		{{message}}
-	</div>
 
-	<div id="app2">
-		<span v-bind:title="message">
-			Наведи на меня курсор.
-		</span>
-	</div>
+	<div id="game">
+		<div v-if="stepGame === 'login'">
+			<h2>Имя пользователя 1</h2>
+			<p>(--{{username1}}--)</p>
+			<input v-model="username1">
 
-	<div id="app3">
-		<span v-if="seen">Возможно, сейчас этот элемент виден.</span>
-	</div>
+			<h2>Имя пользователя 2</h2>
+			<p>(--{{username2}}--)</p>
+			<input v-model="username2"><br>
 
-	<div id="app4">
-		<ol>
-			<li v-for="pin in todo">{{pin.text}}</li>
-		</ol>
-	</div>
-
-	<div id="app5">
-		<p>{{message}}</p>
-		<button v-on:click="reverse">Перевернкть сообщение.</button>
-	</div>
--->
-
-	<div id="username">
-		<div v-if="login">
-			<h1>Имя пользователя</h1>
-			<p>(--{{message}}--)</p>
-			<input v-model="message">
-			<button v-on:click="loginGo">Вход</button>
+			<button v-on:click="loginGo">Играть</button>
 		</div>
-		<div v-if="!login">
-			<h1>Список пользователя {{message}}.</h1>
-			<input v-model="pinToPush">
-			<button v-on:click="pushGo">Добавить</button>
-			<ol>
-				<todo-item
-						v-for="item in list"
-						v-bind:todo="item"
-						v-bind:key="item.id"
-				></todo-item>
-			</ol>
+		<div v-if="stepGame === 'game'">
+			<h1>Великое противостояние игроков {{username1}} и {{username2}}.</h1>
+			<h2>В самой жестокой игре на выживание КРЕСТИКИ-НОЛИКИ!</h2>
+			<h3>Ход могучего игрока
+				<span v-if="stepUser1" class="player1">{{username1}}</span>
+				<span v-if="!stepUser1" class="player2">{{username2}}</span>
+			</h3>
+			<div class="area">
+				<area-row v-for="row in area" v-bind:row="row" :key="row.id"></area-row>
+			</div>
+		</div>
+		<div v-if="stepGame === 'win'">
+			<h1>Великое противостояние игроков {{username1}} и {{username2}}.</h1>
+			<h2>В самой жестокой игре на выживание КРЕСТИКИ-НОЛИКИ!</h2>
+			<h3>Выиграл могучий игрок
+				<span v-if="win === 1" class="player1">{{username1}}</span>
+				<span v-if="win === 2" class="player2">{{username2}}</span>
+			</h3>
 		</div>
 	</div>
 
