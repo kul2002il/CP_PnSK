@@ -19,10 +19,10 @@
 			<p class="discipline">Специальность 090207 «Информационные системы и программирование»</p>
 
 			<p class="title_work">
-				Отчет по практической работе №1<br/>
+				Отчет по практической работе №2<br/>
 				учебной дисциплины<br/>
 				УП 09 «Программирование на стороне клиента»<br/>
-				Тема: «Создание приложения “Список покупок” на языке
+				Тема: «Создание приложения “Крестики-нолики” на языке
 				JavaScript с использованием фреймворка Vue.js»
 			</p>
 
@@ -55,21 +55,20 @@
 
 			<h3>Цель</h3>
 			<p>
-				Научиться основным способам тестирования веб-приложений
+				Научиться разработке приложений на языке JavaScript с использованием фреймворка Vue.js.
 			</p>
 			<h3>Задание</h3>
 			<p>
-				Используя полученные ранее знания, реализуйте с помощью Vue
-				простейшее приложение, позволяющее формировать список покупок.
+				Используя полученные ранее знания, реализуйте с помощью Vue игру “Крестики-нолики”.
 			</p>
 			<p>
 				Задачи:
 				<ol>
-					<li>ввод имени пользователя</li>
-					<li>добавление нового пункта в список покупок</li>
-					<li>в зависимости от введенных данных формируется список покупок</li>
-					<li>удаление покупки из списка</li>
-					<li>при клике на покупку в списке она отмечается зачеркнутой</li>
+					<li>ввод имени игроков перед началом игры</li>
+					<li>возможность хода по-очереди</li>
+					<li>игра заканчивается с выигрышем одного из игроков</li>
+					<li>возможность выбора размера поля перед началом игры</li>
+					<li>возможность игры против компьютера</li>
 				</ol>
 			</p>
 		</div>
@@ -91,57 +90,211 @@
 	&lt;title&gt;Даб 1&lt;/title&gt;
 	&lt;script src=&quot;js/vue.js&quot; defer&gt;&lt;/script&gt;
 	&lt;script src=&quot;js/main.js&quot; defer&gt;&lt;/script&gt;
+	&lt;style&gt;
+		.field{
+			display: inline-block;
+			width: 30px;
+			height: 30px;
+			margin: 0;
+			border: 1px solid black;
+			text-align: center;
+		}
+		.player1{
+			color: blue;
+		}
+		.player2{
+			color: green;
+		}
+	&lt;/style&gt;
 &lt;/head&gt;
 &lt;body&gt;
-	&lt;div id=&quot;username&quot;&gt;
-		&lt;div v-if=&quot;login&quot;&gt;
-			&lt;h1&gt;Имя пользователя&lt;/h1&gt;
-			&lt;p&gt;(--{{message}}--)&lt;/p&gt;
-			&lt;input v-model=&quot;message&quot;&gt;
-			&lt;button v-on:click=&quot;loginGo&quot;&gt;Вход&lt;/button&gt;
+
+	&lt;div id=&quot;game&quot;&gt;
+		&lt;div v-if=&quot;stepGame === 'login'&quot;&gt;
+			&lt;h2&gt;Имя пользователя 1&lt;/h2&gt;
+			&lt;p&gt;(--{{username1}}--)&lt;/p&gt;
+			&lt;input v-model=&quot;username1&quot;&gt;
+
+			&lt;h2&gt;Имя пользователя 2&lt;/h2&gt;
+			&lt;p&gt;(--{{username2}}--)&lt;/p&gt;
+			&lt;input v-model=&quot;username2&quot;&gt;&lt;br&gt;
+			&lt;input v-model=&quot;isWishComp&quot; type=&quot;checkbox&quot; id=&quot;isWishComp&quot;&gt;
+			&lt;label for=&quot;isWishComp&quot;&gt;Игра с компьютером&lt;/label&gt;&lt;br&gt;
+
+			&lt;h2&gt;Размер поля&lt;/h2&gt;
+			&lt;input type=&quot;number&quot; v-model=&quot;cols&quot; placeholder=&quot;Ширина&quot;&gt;&lt;br&gt;
+			&lt;input type=&quot;number&quot; v-model=&quot;rows&quot; placeholder=&quot;Высота&quot;&gt;&lt;br&gt;
+			&lt;p&gt;Поле {{cols}} на {{rows}}&lt;/p&gt;
+
+			&lt;h2&gt;Условие выигрыша&lt;/h2&gt;
+			&lt;p&gt;Клеток подряд, необходимых для выигрыша&lt;/p&gt;
+			&lt;input type=&quot;number&quot; v-model=&quot;numberInLine&quot; placeholder=&quot;Клетки&quot;&gt;&lt;br&gt;
+
+			&lt;button v-on:click=&quot;loginGo&quot;&gt;Играть&lt;/button&gt;
 		&lt;/div&gt;
-		&lt;div v-if=&quot;!login&quot;&gt;
-			&lt;h1&gt;Список пользователя {{message}}.&lt;/h1&gt;
-			&lt;input v-model=&quot;pinToPush&quot;&gt;
-			&lt;button v-on:click=&quot;pushGo&quot;&gt;Добавить&lt;/button&gt;
-			&lt;ol&gt;
-				&lt;todo-item
-						v-for=&quot;item in list&quot;
-						v-bind:todo=&quot;item&quot;
-						v-bind:key=&quot;item.id&quot;
-				&gt;&lt;/todo-item&gt;
-			&lt;/ol&gt;
+		&lt;div v-if=&quot;stepGame === 'game'&quot;&gt;
+			&lt;h1&gt;Великое противостояние игроков {{username1}} и {{username2}}.&lt;/h1&gt;
+			&lt;h2&gt;В самой жестокой игре на выживание КРЕСТИКИ-НОЛИКИ!&lt;/h2&gt;
+			&lt;h3&gt;Ход могучего игрока
+				&lt;span v-if=&quot;stepUser1&quot; class=&quot;player1&quot;&gt;{{username1}}&lt;/span&gt;
+				&lt;span v-if=&quot;!stepUser1&quot; class=&quot;player2&quot;&gt;{{username2}}&lt;/span&gt;
+			&lt;/h3&gt;
+			&lt;div class=&quot;area&quot;&gt;
+				&lt;area-row v-for=&quot;row in area&quot; v-bind:row=&quot;row&quot;
+					:key=&quot;row.id&quot;&gt;&lt;/area-row&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;div v-if=&quot;stepGame === 'win'&quot;&gt;
+			&lt;h1&gt;Великое противостояние игроков {{username1}} и {{username2}}.&lt;/h1&gt;
+			&lt;h2&gt;В самой жестокой игре на выживание КРЕСТИКИ-НОЛИКИ!&lt;/h2&gt;
+			&lt;h3&gt;Выиграл могучий игрок
+				&lt;span v-if=&quot;win === 1&quot; class=&quot;player1&quot;&gt;{{username1}}&lt;/span&gt;
+				&lt;span v-if=&quot;win === 2&quot; class=&quot;player2&quot;&gt;{{username2}}&lt;/span&gt;
+			&lt;/h3&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
+
 &lt;/body&gt;
-&lt;/html&gt;</pre>
+&lt;/html&gt;
+</pre>
 				<p>imdex.html</p>
 			</div>
 
 			<h3>Файл главного скрипта</h3>
 			<div class="img">
 				<pre>
-let username = new Vue({
-	el: &quot;#username&quot;,
-	data: {
-		login: true,
-		message: &quot;&quot;,
-		pinToPush: &quot;&quot;,
-		list: [],
+
+let area = [[]];
+
+let data = {
+	username1: &quot;Пупа&quot;,
+	username2: &quot;Лупа&quot;,
+	isWishComp: false,
+	stepUser1: true,
+	stepGame: 'login',
+	win: &quot;&quot;,
+	area: area,
+	numberInLine: 3,
+	rows: 3,
+	cols: 3,
+};
+
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function computerClick() {
+	let buttons = document.querySelectorAll(&quot;button&quot;);
+	buttons[getRandomInt(0, buttons.length)].click();
+}
+
+function checkWin(charPlayer)
+{
+	let directions =
+	{
+		lu_rd: {down: 1, right: 1},
+		ru_ld: {down: 1, right: -1},
+		lu_ld: {down: 1, right: 0},
+		lu_ru: {down: 0, right: 1},
+	};
+	let limit = data.numberInLine;
+	let wigth = data.cols;
+	let height = data.rows;
+
+	startsCoor = [];
+	for(let i = 0; i &lt; height; i++)
+	{
+		startsCoor.push({y: i,x: 0});
+		startsCoor.push({y: i,x: wigth-1});
+	}
+	for(let i = 0; i &lt; wigth; i++)
+	{
+		startsCoor.push({y: 0,x: i});
+	}
+
+	for(let start in startsCoor)
+	{
+		for(let direct in directions)
+		{
+			let y = startsCoor[start].y;
+			let x = startsCoor[start].x;
+			let count = 0;
+			try
+			{
+				while(1)
+				{
+					if(area[y][x].text === charPlayer)
+					{
+						count++;
+						if(count &gt;= limit)
+						{
+							return true;
+						}
+					}
+					else
+					{
+						count = 0;
+					}
+					y += directions[direct].down;
+					x += directions[direct].right;
+				}
+			}
+			catch (e){}
+		}
+	}
+	return false;
+}
+
+let game = new Vue({
+	el: &quot;#game&quot;,
+	data: data,
+	updated: function()
+	{
+		//Заканчивание игры
+		if(checkWin(&quot;X&quot;))
+		{
+			data.win = 1;
+			data.stepGame = 'win';
+		}
+		else if(checkWin(&quot;O&quot;))
+		{
+			data.win = 2;
+			data.stepGame = 'win';
+		}
 	},
 	methods:
 	{
 		loginGo: function () {
-			this.login = false;
+			// Установка поля
+			let template = {text: &quot;_&quot;,};
+			let rowTemplate = [];
+			//area = [];
+			for (let i = 0; i &lt; this.cols; i++)
+			{
+				rowTemplate.push(Object.assign({}, template))
+			}
+			let srtTem = JSON.stringify(rowTemplate);
+			for (let i = 0; i &lt; this.rows; i++)
+			{
+				area.push(JSON.parse(srtTem));
+			}
+			area.shift();
+
+			this.stepGame = 'game';
 		},
-		pushGo: function(){
-			this.list.push(this.pinToPush);
-		}
 	},
 });
 
-Vue.component(&quot;todo-item&quot;, {
-	props: [&quot;todo&quot;],
+Vue.component(&quot;area-row&quot;, {
+	props: [&quot;row&quot;],
+	template: '&lt;div class=&quot;row&quot;&gt;&lt;area-field v-for=&quot;field in row&quot;
+		v-bind:field=&quot;field&quot; :key=&quot;field.id&quot;&gt;&lt;/area-field&gt;&lt;/div&gt;',
+});
+
+Vue.component(&quot;area-field&quot;, {
+	props: [&quot;field&quot;],
 	data: function()
 	{
 		return {
@@ -149,55 +302,76 @@ Vue.component(&quot;todo-item&quot;, {
 			line: false,
 		}
 	},
-	template:
-		'&lt;li v-if=&quot;exist&quot;&gt;' +
-		'&lt;span v-on:click=&quot;lineGo&quot;&gt;' +
-		'&lt;span v-if=&quot;!line&quot;&gt;{{todo}}&lt;/span&gt;' +
-		'&lt;del v-if=&quot;line&quot;&gt;{{todo}}&lt;/del&gt;' +
-		'&lt;/span&gt;' +
-		'&lt;button v-on:click=&quot;deleteGo&quot;&gt;Удалить&lt;/button&gt;' +
-		'&lt;/li&gt;',
 	methods:
 	{
-		deleteGo: function(){
-			this.exist = false;
-		},
-		lineGo: function(){
-			this.line = !this.line;
+		stepGo: function () {
+			if(data.stepUser1)
+			{
+				this.field.text = &quot;X&quot;;
+				data.stepUser1 = !data.stepUser1;
+				if(data.isWishComp)
+				{
+					computerClick();
+				}
+			}
+			else
+			{
+				data.stepUser1 = !data.stepUser1;
+				this.field.text = &quot;O&quot;;
+			}
 		}
 	},
-});</pre>
+	template:
+'&lt;div class=&quot;field&quot;&gt;\
+&lt;span v-if=&quot;field.text===\'_\'&quot;&gt;&lt;button @click=&quot;stepGo&quot;&gt;u&lt;/button&gt;&lt;/span&gt;\
+&lt;span v-else&gt;{{field.text}}&lt;/span&gt;\
+&lt;/div&gt;',
+});
+</pre>
 				<p>js/main.js</p>
 			</div>
 		</div>
 		<div>
 			<h2>Результаты работы программы</h2>
-			<h3>Ввод имени пользователя</h3>
+			<h3>Стандартная игра</h3>
 			<p>
 				<div class="img">
 					<img src="img/1.png">
-					<p>Ввод имени пользователя</p>
+					<p>Доступные параметры игры</p>
+				</div>
+				<div class="img">
+					<img src="img/2.png">
+					<p>Процесс игры</p>
+				</div>
+				<div class="img">
+					<img src="img/3.png">
+					<p>Сообщение конца игры</p>
 				</div>
 			</p>
 
-			<h3>Работа со списком</h3>
+			<h3>Нестандартная игра</h3>
 			<p>
 				<div class="img">
-					<img src="img/2.png">
-					<p>Список, с которым работали</p>
+					<img src="img/4.png">
+					<p>Доступные параметры игры</p>
 				</div>
 				<div class="img">
-					<img src="img/2.2.png">
-					<p>Удаление элемента</p>
+					<img src="img/5.png">
+					<p>Процесс игры</p>
+				</div>
+				<div class="img">
+					<img src="img/6.png">
+					<p>Сообщение конца игры</p>
 				</div>
 			</p>
+
 		</div>
 
 		<div>
 			<h2>Вывод</h2>
 			<p>
 				В ходе выполнения практической работы были получены знания
-				о реализации с помощью Vue простого приложения.
+				о реализации приложения с помощью Vue.
 			</p>
 		</div>
 	</main>
