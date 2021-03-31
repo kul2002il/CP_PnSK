@@ -1,121 +1,73 @@
-/*
-let app = new Vue({
-	el: "#app",
-	data: {
-		message: "Начало.",
+
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min)) + min;
+}
+
+let data = {
+	state: "login",
+	username: "Биба",
+	fishes: [{},{},{},{},{},{},],
+	aquariumSize: {
+		x: 300,
+		y: 200
 	},
-});
+}
 
-
-let app2 = new Vue({
-	el: "#app2",
-	data: {
-		message: "Вы загрузили эту страницу: " + new Date().toLocaleString(),
-	},
-});
-
-
-let app3 = new Vue({
-	el: "#app3",
-	data: {
-		seen: true,
-	},
-});
-
-
-let app4 = new Vue({
-	el: "#app4",
-	data: {
-		todo:
-		[
-			{text: "Начать"},
-			{text: "Продолжить"},
-			{text: "Закончить"},
-		],
-	},
-});
-
-
-let app5 = new Vue({
-	el: "#app5",
-	data:
-	{
-		message: "Другое начало.",
-	},
-	methods:
-	{
-		reverse: function () {
-			this.message = this.message.split('').reverse().join("");
-		}
-	},
-});
-*/
-
-let username = new Vue({
-	el: "#username",
-	data: {
-		login: true,
-		message: "",
-		pinToPush: "",
-		list: [],
-	},
+let game = new Vue({
+	el: "#game",
+	data: data,
 	methods:
 	{
 		loginGo: function () {
-			this.login = false;
+			this.state = "game";
 		},
-		pushGo: function(){
-			this.list.push(this.pinToPush);
-		}
 	},
 });
 
-Vue.component("todo-item", {
-	props: ["todo"],
+Vue.component("fish", {
+	props: ["fish"],
 	data: function()
 	{
-		return {
-			exist: true,
-			line: false,
+		this.fish.src = "img/" + getRandomInt(1, 6) + ".svg";
+		this.fish.cost = getRandomInt(1, 4);
+		this.fish.position =
+		{
+			x: Math.random(),
+			y: Math.random(),
 		}
+		return {};
 	},
-	template:
-		'<li v-if="exist">' +
-		'<span v-on:click="lineGo">' +
-		'<span v-if="!line">{{todo}}</span>' +
-		'<del v-if="line">{{todo}}</del>' +
-		'</span>' +
-		'<button v-on:click="deleteGo">Удалить</button>' +
-		'</li>',
+	template: '<img class="fish" :src="fish.src" alt="fish" :style="styleObject" @click="grab">',
+	computed:
+	{
+		styleObject: function () {
+			return {
+				width: (150 - this.fish.cost * 30) + "px",
+				top: data.aquariumSize.y * this.fish.position.y - this.size.y + "px",
+				left: data.aquariumSize.x * this.fish.position.x - this.size.x + "px",
+			};
+		},
+		size: function () {
+			if(this.$el)
+			return {
+				y: this.$el.offsetHeight,
+				x: this.$el.offsetWidth,
+			};
+			return {
+				y: 0,
+				x: 0,
+			};
+		},
+	},
 	methods:
 	{
-		deleteGo: function(){
-			this.exist = false;
+		grab: function () {
+			let index = data.fishes.indexOf(this.fish);
+			if (index > -1) {
+				data.fishes.splice(index, 1);
+			}
 		},
-		lineGo: function(){
-			this.line = !this.line;
-		}
 	},
 });
-
-/*
-let app7 = new Vue({
-	el: "#app7",
-	data: {
-		list: [
-			{
-				id: 0,
-				text: "Текст0",
-			},
-			{
-				id: 1,
-				text: "Текст1",
-			},
-			{
-				id: 2,
-				text: "Текст2",
-			},
-		],
-	},
-});
-*/

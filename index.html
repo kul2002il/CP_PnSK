@@ -8,53 +8,31 @@
 	<title>Даб 1</title>
 	<script src="js/vue.js" defer></script>
 	<script src="js/main.js" defer></script>
+	<style>
+		.aquarium{
+			position: relative;
+			height: 80vh;
+			border: 1px solid black;
+		}
+		.fish{
+			position: absolute;
+		}
+	</style>
 </head>
 <body>
-<!--
-	<div id="app">
-		{{message}}
-	</div>
 
-	<div id="app2">
-		<span v-bind:title="message">
-			Наведи на меня курсор.
-		</span>
-	</div>
-
-	<div id="app3">
-		<span v-if="seen">Возможно, сейчас этот элемент виден.</span>
-	</div>
-
-	<div id="app4">
-		<ol>
-			<li v-for="pin in todo">{{pin.text}}</li>
-		</ol>
-	</div>
-
-	<div id="app5">
-		<p>{{message}}</p>
-		<button v-on:click="reverse">Перевернкть сообщение.</button>
-	</div>
--->
-
-	<div id="username">
-		<div v-if="login">
+	<div id="game">
+		<div v-if="state === 'login'">
 			<h1>Имя пользователя</h1>
-			<p>(--{{message}}--)</p>
-			<input v-model="message">
+			<p>(--{{username}}--)</p>
+			<input v-model="username">
 			<button v-on:click="loginGo">Вход</button>
 		</div>
-		<div v-if="!login">
-			<h1>Список пользователя {{message}}.</h1>
-			<input v-model="pinToPush">
-			<button v-on:click="pushGo">Добавить</button>
-			<ol>
-				<todo-item
-						v-for="item in list"
-						v-bind:todo="item"
-						v-bind:key="item.id"
-				></todo-item>
-			</ol>
+		<div v-if="state === 'game'">
+			<h1>Аквариум пользователя {{username}}.</h1>
+			<div class="aquarium" :style="{width: aquariumSize.x + 'px', height: aquariumSize.y + 'px'}">
+				<fish v-for="fish in fishes" :key="fish.id" :fish="fish"></fish>
+			</div>
 		</div>
 	</div>
 
