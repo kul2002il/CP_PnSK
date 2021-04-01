@@ -22,7 +22,7 @@
 				Отчет по практической работе №1<br/>
 				учебной дисциплины<br/>
 				УП 09 «Программирование на стороне клиента»<br/>
-				Тема: «Создание приложения “Список покупок” на языке
+				Тема: «Создание игры “Рыбки” на языке
 				JavaScript с использованием фреймворка Vue.js»
 			</p>
 
@@ -55,21 +55,28 @@
 
 			<h3>Цель</h3>
 			<p>
-				Научиться основным способам тестирования веб-приложений
+				Научиться создавать программы на языке
+				JavaScript с использованием фреймворка Vue.js
 			</p>
 			<h3>Задание</h3>
 			<p>
-				Используя полученные ранее знания, реализуйте с помощью Vue
-				простейшее приложение, позволяющее формировать список покупок.
+				Создать игру:<br>
+				Существует аквариум, в котором плавают рыбки. Каждую секунду добавляются новые рыбки, до определенного
+				максимума заполняемости аквариума. При клике на рыбку, она исчезает, игроку начисляются некоторое
+				количество баллов. Задача, набрать максимальное количество баллов за минуту.
 			</p>
 			<p>
 				Задачи:
 				<ol>
 					<li>ввод имени пользователя</li>
-					<li>добавление нового пункта в список покупок</li>
-					<li>в зависимости от введенных данных формируется список покупок</li>
-					<li>удаление покупки из списка</li>
-					<li>при клике на покупку в списке она отмечается зачеркнутой</li>
+					<li>по клику на рыбку она исчезает, а игроку начисляются очки</li>
+					<li>рыбки двигаются</li>
+					<li>игра заканчивается с окончанием времени</li>
+					<li>присутствуют несколько видов рыб разных размеров и видов, при клике на каждую начисляется разное
+						количество очков</li>
+					<li>присутствуют анимации появления и исчезновения рыб, анимации таймера, элементов интерфейса</li>
+					<li>после окончания игры появляется таблица рекордов, в которой показан текущий результат игрока
+						и результаты лучших 10 попыток</li>
 				</ol>
 			</p>
 		</div>
@@ -80,39 +87,64 @@
 			<div class="img">
 				<pre>
 &lt;!doctype html&gt;
-&lt;html lang=&quot;ru&quot; xmlns:v-on=&quot;http://www.w3.org/1999/xhtml&quot;
-	xmlns:v-bind=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;html lang=&quot;ru&quot; xmlns:v-on=&quot;http://www.w3.org/1999/xhtml&quot; xmlns:v-bind=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
 &lt;head&gt;
 	&lt;meta charset=&quot;UTF-8&quot;&gt;
 	&lt;meta name=&quot;viewport&quot;
-	content=&quot;width=device-width, user-scalable=no, initial-scale=1.0,
-		maximum-scale=1.0, minimum-scale=1.0&quot;&gt;
+	content=&quot;width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0&quot;&gt;
 	&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;
 	&lt;title&gt;Даб 1&lt;/title&gt;
 	&lt;script src=&quot;js/vue.js&quot; defer&gt;&lt;/script&gt;
 	&lt;script src=&quot;js/main.js&quot; defer&gt;&lt;/script&gt;
+	&lt;style&gt;
+		.aquarium{
+			position: relative;
+			height: 80vh;
+			border: 1px solid black;
+			overflow: hidden;
+		}
+		.fish{
+			position: absolute;
+		}
+		.create-enter{
+			opacity: 0;
+		}
+		.create-enter-active{
+			transition: opacity .9s;
+		}
+		.timer{
+			padding: 10px;
+		}
+	&lt;/style&gt;
 &lt;/head&gt;
 &lt;body&gt;
-	&lt;div id=&quot;username&quot;&gt;
-		&lt;div v-if=&quot;login&quot;&gt;
+
+	&lt;div id=&quot;game&quot;&gt;
+		&lt;div v-if=&quot;state === 'login'&quot;&gt;
 			&lt;h1&gt;Имя пользователя&lt;/h1&gt;
-			&lt;p&gt;(--{{message}}--)&lt;/p&gt;
-			&lt;input v-model=&quot;message&quot;&gt;
+			&lt;p&gt;(--{{username}}--)&lt;/p&gt;
+			&lt;input v-model=&quot;username&quot;&gt;
 			&lt;button v-on:click=&quot;loginGo&quot;&gt;Вход&lt;/button&gt;
 		&lt;/div&gt;
-		&lt;div v-if=&quot;!login&quot;&gt;
-			&lt;h1&gt;Список пользователя {{message}}.&lt;/h1&gt;
-			&lt;input v-model=&quot;pinToPush&quot;&gt;
-			&lt;button v-on:click=&quot;pushGo&quot;&gt;Добавить&lt;/button&gt;
+		&lt;div v-if=&quot;state === 'game'&quot;&gt;
+			&lt;h1&gt;Аквариум пользователя {{username}}.&lt;/h1&gt;
+			&lt;p&gt;Счёт: {{score}}. Осталось времени: &lt;span class=&quot;timer&quot; :style=&quot;timerStyle&quot;&gt;{{Math.ceil(timeLeft)}}&lt;/span&gt;.&lt;/p&gt;
+			&lt;div class=&quot;aquarium&quot;&gt;
+				&lt;transition-group name=&quot;create&quot; tag=&quot;div&quot;&gt;
+					&lt;fish v-for=&quot;fish in fishes&quot; :key=&quot;fish.id&quot; :fish=&quot;fish&quot;&gt;&lt;/fish&gt;
+				&lt;/transition-group&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;div v-if=&quot;state === 'end'&quot;&gt;
+			&lt;h1&gt;Игра закончена&lt;/h1&gt;
+			&lt;p&gt;Ваш счёт &lt;b&gt;{{score}}&lt;/b&gt;&lt;/p&gt;
+			&lt;h2&gt;Список лидеров&lt;/h2&gt;
 			&lt;ol&gt;
-				&lt;todo-item
-						v-for=&quot;item in list&quot;
-						v-bind:todo=&quot;item&quot;
-						v-bind:key=&quot;item.id&quot;
-				&gt;&lt;/todo-item&gt;
+				&lt;li v-for=&quot;pin in leaderboard&quot; :key=&quot;pin.id&quot;&gt;{{pin.score}} - {{pin.user}}&lt;/li&gt;
 			&lt;/ol&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
+
 &lt;/body&gt;
 &lt;/html&gt;</pre>
 				<p>imdex.html</p>
@@ -121,52 +153,162 @@
 			<h3>Файл главного скрипта</h3>
 			<div class="img">
 				<pre>
-let username = new Vue({
-	el: &quot;#username&quot;,
-	data: {
-		login: true,
-		message: &quot;&quot;,
-		pinToPush: &quot;&quot;,
-		list: [],
+const limitFish = 20;
+
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min)) + min;
+}
+
+window.onresize = function()
+{
+	let aqua = document.querySelector(&quot;.aquarium&quot;);
+	if (aqua)
+	{
+		data.aquariumSize.x = aqua.offsetWidth;
+		data.aquariumSize.y = aqua.offsetHeight;
+	}
+};
+
+let data = {
+	state: &quot;login&quot;,
+	username: &quot;Биба&quot;,
+	fishes: [],
+	aquariumSize: {
+		x: 800,
+		y: 600,
+	},
+	score: 0,
+	timeStart: new Date(),
+	timer: 60000,
+	timeLeft: 0,
+	leaderboard: JSON.parse(localStorage[&quot;leaderboard&quot;] || &quot;[]&quot;),
+};
+
+let game = new Vue({
+	el: &quot;#game&quot;,
+	data: data,
+	computed:
+	{
+		timerStyle: function()
+		{
+			let percent = Math.ceil((data.timeLeft % 1)*100);
+			let color = [&quot;#0ff&quot;, &quot;#faf&quot;];
+			if (data.timeLeft % 2 &gt; 1){
+				color.reverse()
+			}
+			return {background: &#x60;linear-gradient(to left, ${color[0]} ${percent}%, ${color[1]} ${percent}%)&#x60;}
+		}
 	},
 	methods:
 	{
 		loginGo: function () {
-			this.login = false;
+			this.state = &quot;game&quot;;
+			data.timeStart = new Date();
+			setInterval(()=&gt;{
+				if (data.fishes.length &lt; limitFish)
+				{
+					data.fishes.push({position:{}, size: {}, id: +(new Date())});
+				}
+			}, 1000);
 		},
-		pushGo: function(){
-			this.list.push(this.pinToPush);
-		}
 	},
 });
 
-Vue.component(&quot;todo-item&quot;, {
-	props: [&quot;todo&quot;],
+Vue.component(&quot;fish&quot;, {
+	props: [&quot;fish&quot;],
 	data: function()
 	{
-		return {
-			exist: true,
-			line: false,
-		}
+		this.fish.src = &quot;img/&quot; + getRandomInt(1, 6) + &quot;.svg&quot;;
+		this.fish.cost = getRandomInt(1, 4);
+		this.fish.position = {
+			x: Math.random(),
+			y: Math.random(),
+		};
+		this.fish.speed = {
+			x: Math.random() * 0.02 - 0.01,
+			y: Math.random() * 0.002 - 0.001,
+		};
+		return {};
 	},
-	template:
-		'&lt;li v-if=&quot;exist&quot;&gt;' +
-		'&lt;span v-on:click=&quot;lineGo&quot;&gt;' +
-		'&lt;span v-if=&quot;!line&quot;&gt;{{todo}}&lt;/span&gt;' +
-		'&lt;del v-if=&quot;line&quot;&gt;{{todo}}&lt;/del&gt;' +
-		'&lt;/span&gt;' +
-		'&lt;button v-on:click=&quot;deleteGo&quot;&gt;Удалить&lt;/button&gt;' +
-		'&lt;/li&gt;',
+	template: '&lt;img class=&quot;fish&quot; :src=&quot;fish.src&quot; alt=&quot;fish&quot; :style=&quot;styleObject&quot; @click=&quot;grab&quot;&gt;',
+	computed:
+	{
+		styleObject: function () {
+			return {
+				width: this.size.x + &quot;px&quot;,
+				top: &#x60;calc((100% - ${this.size.y}px) * ${this.fish.position.y})&#x60;,
+				left: &#x60;calc((100% - ${this.size.x}px) * ${this.fish.position.x})&#x60;,
+				transform: &#x60;scale(${(this.fish.speed.x &gt; 0) * 2 - 1}, 1)&#x60;
+			};
+		},
+		size: function () {
+			if(this.$el)
+			return {
+				y: this.$el.offsetHeight,
+				x: 150 - this.fish.cost * 30,
+			};
+			return {
+				y: 100,
+				x: 150 - this.fish.cost * 30,
+			};
+		},
+	},
 	methods:
 	{
-		deleteGo: function(){
-			this.exist = false;
+		grab: function () {
+			this.fish.speed.y = -0.07;
+			this.fish.canMoveUp = true;
+			let index = data.fishes.indexOf(this.fish);
+			setTimeout(function () {
+				if (index &gt; -1) {
+					data.fishes.splice(index, 1);
+				}
+			}, 2000);
+			data.score += this.fish.cost;
 		},
-		lineGo: function(){
-			this.line = !this.line;
-		}
 	},
-});</pre>
+});
+
+function loop() {
+	if (document.querySelector(&quot;.aquarium&quot;))
+	{
+		data.fishes.forEach(fish=&gt;{
+			fish.position.x += fish.speed.x;
+			fish.position.y += fish.speed.y;
+
+			if((fish.position.y &gt; 1 || fish.position.y &lt; 0) &amp;&amp; !(fish.canMoveUp))
+			{
+				fish.speed.y *= -1;
+				fish.position.y += fish.speed.y;
+			}
+			if(fish.position.x &gt; 1 || fish.position.x &lt; 0)
+			{
+				fish.speed.x *= -1;
+				fish.position.x += fish.speed.x;
+			}
+		});
+		data.timeLeft = (data.timer - (new Date() - data.timeStart)) / 1000;
+		if (data.timeLeft &lt;= 0)
+		{
+			data.leaderboard.push({
+				user: data.username,
+				score: data.score,
+			});
+			data.leaderboard.sort((a, b)=&gt; b.score - a.score);
+			if(data.leaderboard.length &gt; 10)
+			{
+				data.leaderboard.splice(10, 999);
+			}
+			localStorage[&quot;leaderboard&quot;] = JSON.stringify(data.leaderboard);
+			data.state = &quot;end&quot;;
+		}
+	}
+	requestAnimationFrame(loop);
+}
+
+loop();</pre>
 				<p>js/main.js</p>
 			</div>
 		</div>

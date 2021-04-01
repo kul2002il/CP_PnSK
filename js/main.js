@@ -155,5 +155,3 @@ function loop() {
 }
 
 loop();
-
-
