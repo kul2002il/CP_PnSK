@@ -13,9 +13,14 @@
 			position: relative;
 			height: 80vh;
 			border: 1px solid black;
+			overflow: hidden;
 		}
 		.fish{
 			position: absolute;
+		}
+		.timer{
+			padding: 10px;
+			/*background: linear-gradient(to left, green 50%, red 50%);*/
 		}
 	</style>
 </head>
@@ -30,9 +35,19 @@
 		</div>
 		<div v-if="state === 'game'">
 			<h1>Аквариум пользователя {{username}}.</h1>
-			<div class="aquarium" :style="{width: aquariumSize.x + 'px', height: aquariumSize.y + 'px'}">
+			<p>Счёт: {{score}}. Осталось времени: <span class="timer" :style="timerStyle">{{Math.ceil(timeLeft)}}</span>.</p>
+			<!--:style="{width: aquariumSize.x + 'px', height: aquariumSize.y + 'px'}"-->
+			<div class="aquarium">
 				<fish v-for="fish in fishes" :key="fish.id" :fish="fish"></fish>
 			</div>
+		</div>
+		<div v-if="state === 'end'">
+			<h1>Игра закончена</h1>
+			<p>Ваш счёт <b>{{score}}</b></p>
+			<h2>Список лидеров</h2>
+			<ol>
+				<li v-for="pin in leaderboard" :key="pin.id">{{pin.score}} - {{pin.user}}</li>
+			</ol>
 		</div>
 	</div>
 
