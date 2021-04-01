@@ -1,4 +1,6 @@
 
+const limitFish = 20;
+
 function getRandomInt(min, max) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
@@ -18,14 +20,7 @@ window.onresize = function()
 let data = {
 	state: "login",
 	username: "Биба",
-	fishes: [
-		{position:{}, size: {}},
-		{position:{}, size: {}},
-		{position:{}, size: {}},
-		{position:{}, size: {}},
-		{position:{}, size: {}},
-		{position:{}, size: {}},
-	],
+	fishes: [],
 	aquariumSize: {
 		x: 800,
 		y: 600,
@@ -57,6 +52,12 @@ let game = new Vue({
 		loginGo: function () {
 			this.state = "game";
 			data.timeStart = new Date();
+			setInterval(()=>{
+				if (data.fishes.length < limitFish)
+				{
+					data.fishes.push({position:{}, size: {}, id: +(new Date())});
+				}
+			}, 1000);
 		},
 	},
 });
@@ -155,11 +156,4 @@ function loop() {
 
 loop();
 
-const limitFish = 20;
 
-setInterval(()=>{
-	if (data.fishes.length < limitFish)
-	{
-		data.fishes.push({position:{}, size: {}});
-	}
-}, 1000);

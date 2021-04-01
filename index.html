@@ -18,6 +18,12 @@
 		.fish{
 			position: absolute;
 		}
+		.create-enter{
+			opacity: 0;
+		}
+		.create-enter-active{
+			transition: opacity .9s;
+		}
 		.timer{
 			padding: 10px;
 			/*background: linear-gradient(to left, green 50%, red 50%);*/
@@ -36,9 +42,10 @@
 		<div v-if="state === 'game'">
 			<h1>Аквариум пользователя {{username}}.</h1>
 			<p>Счёт: {{score}}. Осталось времени: <span class="timer" :style="timerStyle">{{Math.ceil(timeLeft)}}</span>.</p>
-			<!--:style="{width: aquariumSize.x + 'px', height: aquariumSize.y + 'px'}"-->
 			<div class="aquarium">
-				<fish v-for="fish in fishes" :key="fish.id" :fish="fish"></fish>
+				<transition-group name="create" tag="div">
+					<fish v-for="fish in fishes" :key="fish.id" :fish="fish"></fish>
+				</transition-group>
 			</div>
 		</div>
 		<div v-if="state === 'end'">
