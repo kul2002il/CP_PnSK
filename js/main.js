@@ -1,4 +1,9 @@
 
+function saveLists()
+{
+	localStorage.setList = JSON.stringify(data.setList);
+}
+
 let id = +(new Date());
 
 let initSetList = [
@@ -40,28 +45,30 @@ let initSetList = [
 
 let data = {
 	nameList: "",
-	setList: initSetList,
+	setList: JSON.parse(localStorage.setList || "[]"),
 };
 
 Vue.component("todo-list", {
 	props: ["list"],
 	template:
 '<div :style="styleObject" class="list">\
-	<table class="listHeader"><tr>\
-		<td><input v-model="list.name"></td>\
-		<td>\
-			<button @click="deleteList">-</button>\
-			<label :for="list+list.dateCreate">цвет</label>\
-			<input v-model="list.color" type="color" :id="list+list.dateCreate" hidden>\
-		</td>\
-	</tr></table>\
+	<table class="listHeader">\
+		<tr>\
+			<td><input v-model="list.name"></td>\
+			<td>\
+				<button @click="deleteList">-</button>\
+				<label :for="list+list.dateCreate">цвет</label>\
+				<input v-model="list.color" type="color" :id="list+list.dateCreate" hidden>\
+			</td>\
+		</tr>\
+	</table>\
 	<ol>\
 		<todo-item v-for="pin in list.list" :key="pin.dateCreate" :pin="pin"></todo-item>\
 		<li><table class="tableList"><tr>\
 			<td class="checkbox"></td>\
 			<td><button @click="addPin">Добавить</button></td>\
 			<td></td>\
-		</table></tr></li>\
+		</tr></table></li>\
 	</ol>\
 	<div>{{(new Date(list.dateCreate)).toLocaleTimeString()}}</div>\
 </div>',
@@ -87,6 +94,9 @@ Vue.component("todo-list", {
 			data.setList.splice(index,1);
 		},
 	},
+	updated: function () {
+		saveLists();
+	},
 });
 
 Vue.component("todo-item", {
@@ -105,6 +115,9 @@ Vue.component("todo-item", {
 			list.list.splice(index,1);
 		},
 	},
+	updated: function () {
+		saveLists();
+	},
 });
 
 let app = new Vue({
@@ -122,6 +135,6 @@ let app = new Vue({
 		}
 	},
 	updated: function () {
-		console.log("updated");
-	}
+		saveLists();
+	},
 });
