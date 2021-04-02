@@ -87,11 +87,13 @@
 			<div class="img">
 				<pre>
 &lt;!doctype html&gt;
-&lt;html lang=&quot;ru&quot; xmlns:v-on=&quot;http://www.w3.org/1999/xhtml&quot; xmlns:v-bind=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;html lang=&quot;ru&quot; xmlns:v-on=&quot;http://www.w3.org/1999/xhtml&quot;
+	xmlns:v-bind=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
 &lt;head&gt;
 	&lt;meta charset=&quot;UTF-8&quot;&gt;
 	&lt;meta name=&quot;viewport&quot;
-	content=&quot;width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0&quot;&gt;
+	content=&quot;width=device-width, user-scalable=no, initial-scale=1.0,
+		maximum-scale=1.0, minimum-scale=1.0&quot;&gt;
 	&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;
 	&lt;title&gt;Даб 1&lt;/title&gt;
 	&lt;script src=&quot;js/vue.js&quot; defer&gt;&lt;/script&gt;
@@ -128,7 +130,8 @@
 		&lt;/div&gt;
 		&lt;div v-if=&quot;state === 'game'&quot;&gt;
 			&lt;h1&gt;Аквариум пользователя {{username}}.&lt;/h1&gt;
-			&lt;p&gt;Счёт: {{score}}. Осталось времени: &lt;span class=&quot;timer&quot; :style=&quot;timerStyle&quot;&gt;{{Math.ceil(timeLeft)}}&lt;/span&gt;.&lt;/p&gt;
+			&lt;p&gt;Счёт: {{score}}. Осталось времени: &lt;span class=&quot;timer&quot;
+				:style=&quot;timerStyle&quot;&gt;{{Math.ceil(timeLeft)}}&lt;/span&gt;.&lt;/p&gt;
 			&lt;div class=&quot;aquarium&quot;&gt;
 				&lt;transition-group name=&quot;create&quot; tag=&quot;div&quot;&gt;
 					&lt;fish v-for=&quot;fish in fishes&quot; :key=&quot;fish.id&quot; :fish=&quot;fish&quot;&gt;&lt;/fish&gt;
@@ -140,7 +143,8 @@
 			&lt;p&gt;Ваш счёт &lt;b&gt;{{score}}&lt;/b&gt;&lt;/p&gt;
 			&lt;h2&gt;Список лидеров&lt;/h2&gt;
 			&lt;ol&gt;
-				&lt;li v-for=&quot;pin in leaderboard&quot; :key=&quot;pin.id&quot;&gt;{{pin.score}} - {{pin.user}}&lt;/li&gt;
+				&lt;li v-for=&quot;pin in leaderboard&quot; :key=&quot;pin.id&quot;&gt;
+					{{pin.score}} - {{pin.user}}&lt;/li&gt;
 			&lt;/ol&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
@@ -198,7 +202,8 @@ let game = new Vue({
 			if (data.timeLeft % 2 &gt; 1){
 				color.reverse()
 			}
-			return {background: &#x60;linear-gradient(to left, ${color[0]} ${percent}%, ${color[1]} ${percent}%)&#x60;}
+			return {background: &#x60;linear-gradient(to left, ${color[0]}\
+${percent}%, ${color[1]} ${percent}%)&#x60;}
 		}
 	},
 	methods:
@@ -232,7 +237,8 @@ Vue.component(&quot;fish&quot;, {
 		};
 		return {};
 	},
-	template: '&lt;img class=&quot;fish&quot; :src=&quot;fish.src&quot; alt=&quot;fish&quot; :style=&quot;styleObject&quot; @click=&quot;grab&quot;&gt;',
+	template: '&lt;img class=&quot;fish&quot; :src=&quot;fish.src&quot; alt=&quot;fish&quot;\
+:style=&quot;styleObject&quot; @click=&quot;grab&quot;&gt;',
 	computed:
 	{
 		styleObject: function () {
@@ -322,15 +328,25 @@ loop();</pre>
 				</div>
 			</p>
 
-			<h3>Работа со списком</h3>
+			<h3>Игра</h3>
 			<p>
+				Реализована анимация:
+				<ol>
+					<li>Плавное появление рыб</li>
+					<li>"Поимка" рыбы. (Рыбу вытягивает вверх.)</li>
+					<li>Анимированный таймер</li>
+				</ol>
 				<div class="img">
 					<img src="img/2.png">
-					<p>Список, с которым работали</p>
+					<p>Процесс игры</p>
 				</div>
+			</p>
+
+			<h3>Конец игры</h3>
+			<p>
 				<div class="img">
-					<img src="img/2.2.png">
-					<p>Удаление элемента</p>
+					<img src="img/3.png">
+					<p>Итоговый счёт</p>
 				</div>
 			</p>
 		</div>
