@@ -1,121 +1,112 @@
-/*
-let app = new Vue({
-	el: "#app",
-	data: {
-		message: "Начало.",
-	},
-});
 
+let id = +(new Date());
 
-let app2 = new Vue({
-	el: "#app2",
-	data: {
-		message: "Вы загрузили эту страницу: " + new Date().toLocaleString(),
-	},
-});
-
-
-let app3 = new Vue({
-	el: "#app3",
-	data: {
-		seen: true,
-	},
-});
-
-
-let app4 = new Vue({
-	el: "#app4",
-	data: {
-		todo:
-		[
-			{text: "Начать"},
-			{text: "Продолжить"},
-			{text: "Закончить"},
+let initSetList = [
+	{
+		name: "Первый список",
+		dateCreate: id,
+		color: "#99ff99",
+		list: [
+			{
+				check: false,
+				pin: "Дело 1",
+				dateCreate: id + 1,
+			},
+			{
+				check: true,
+				pin: "Дело 2",
+				dateCreate: id + 2,
+			},
 		],
 	},
-});
-
-
-let app5 = new Vue({
-	el: "#app5",
-	data:
 	{
-		message: "Другое начало.",
+		name: "Второй список",
+		dateCreate: id + 3,
+		color: "#9999ff",
+		list: [
+			{
+				check: false,
+				pin: "Дело 1",
+				dateCreate: id + 4,
+			},
+			{
+				check: true,
+				pin: "Дело 2",
+				dateCreate: id + 5,
+			},
+		],
 	},
+];
+
+let data = {
+	nameList: "",
+	setList: initSetList,
+};
+
+Vue.component("todo-list", {
+	props: ["list"],
+	template:
+'<div>\
+	<h3><input v-model="list.name"></h3>\
+	<button @click="deleteList">Удалить</button>\
+	<label :for="list+list.dateCreate">цвет</label>\
+	<input v-model="list.color" type="color" :id="list+list.dateCreate" hidden>\
+	<ol>\
+		<todo-item v-for="pin in list.list" :key="pin.dateCreate" :pin="pin"></todo-item>\
+		<li>\
+			<button @click="addPin">Добавить</button>\
+		</li>\
+	</ol>\
+	<div>{{(new Date(list.dateCreate)).toLocaleTimeString()}}</div>\
+</div>',
 	methods:
 	{
-		reverse: function () {
-			this.message = this.message.split('').reverse().join("");
-		}
-	},
-});
-*/
-
-let username = new Vue({
-	el: "#username",
-	data: {
-		login: true,
-		message: "",
-		pinToPush: "",
-		list: [],
-	},
-	methods:
-	{
-		loginGo: function () {
-			this.login = false;
+		addPin: function () {
+			this.list.list.push({
+				check: false,
+				pin: "",
+				dateCreate: +(new Date()),
+			});
 		},
-		pushGo: function(){
-			this.list.push(this.pinToPush);
-		}
+		deleteList: function () {
+			let index = data.setList.indexOf(this.list);
+			data.setList.splice(index,1);
+		},
 	},
 });
 
 Vue.component("todo-item", {
-	props: ["todo"],
-	data: function()
-	{
-		return {
-			exist: true,
-			line: false,
-		}
-	},
+	props: ["pin"],
 	template:
-		'<li v-if="exist">' +
-		'<span v-on:click="lineGo">' +
-		'<span v-if="!line">{{todo}}</span>' +
-		'<del v-if="line">{{todo}}</del>' +
-		'</span>' +
-		'<button v-on:click="deleteGo">Удалить</button>' +
-		'</li>',
+'<li>\
+	<input v-model="pin.check" type="checkbox">\
+	<input v-model="pin.pin" placeholder="Пункт">\
+	<button @click="deletePin">Удалить</button>\
+</li>',
 	methods:
 	{
-		deleteGo: function(){
-			this.exist = false;
+		deletePin: function () {
+			let list = this._vnode.parent.context.list;
+			let index = list.list.indexOf(this.pin);
+			list.list.splice(index,1);
 		},
-		lineGo: function(){
-			this.line = !this.line;
-		}
 	},
 });
 
-/*
-let app7 = new Vue({
-	el: "#app7",
-	data: {
-		list: [
-			{
-				id: 0,
-				text: "Текст0",
-			},
-			{
-				id: 1,
-				text: "Текст1",
-			},
-			{
-				id: 2,
-				text: "Текст2",
-			},
-		],
+let app = new Vue({
+	el: "#app",
+	data: data,
+	methods:
+	{
+		pushGo: function(){
+			this.setList.push({
+				name: this.nameList,
+				dateCreate: +(new Date()),
+				list: [],
+			});
+		}
 	},
+	updated: function () {
+		console.log("updated");
+	}
 });
-*/

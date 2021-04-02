@@ -10,52 +10,15 @@
 	<script src="js/main.js" defer></script>
 </head>
 <body>
-<!--
+
 	<div id="app">
-		{{message}}
-	</div>
-
-	<div id="app2">
-		<span v-bind:title="message">
-			Наведи на меня курсор.
-		</span>
-	</div>
-
-	<div id="app3">
-		<span v-if="seen">Возможно, сейчас этот элемент виден.</span>
-	</div>
-
-	<div id="app4">
+		<header>
+			<input v-model="nameList" placeholder="Название списка">
+			<button @click="pushGo">Добавить</button>
+		</header>
 		<ol>
-			<li v-for="pin in todo">{{pin.text}}</li>
+			<todo-list v-for="list in setList" :key="list.dateCreate" :list="list"></todo-list>
 		</ol>
-	</div>
-
-	<div id="app5">
-		<p>{{message}}</p>
-		<button v-on:click="reverse">Перевернкть сообщение.</button>
-	</div>
--->
-
-	<div id="username">
-		<div v-if="login">
-			<h1>Имя пользователя</h1>
-			<p>(--{{message}}--)</p>
-			<input v-model="message">
-			<button v-on:click="loginGo">Вход</button>
-		</div>
-		<div v-if="!login">
-			<h1>Список пользователя {{message}}.</h1>
-			<input v-model="pinToPush">
-			<button v-on:click="pushGo">Добавить</button>
-			<ol>
-				<todo-item
-						v-for="item in list"
-						v-bind:todo="item"
-						v-bind:key="item.id"
-				></todo-item>
-			</ol>
-		</div>
 	</div>
 
 </body>
