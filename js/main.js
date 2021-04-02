@@ -46,19 +46,33 @@ let data = {
 Vue.component("todo-list", {
 	props: ["list"],
 	template:
-'<div>\
-	<h3><input v-model="list.name"></h3>\
-	<button @click="deleteList">Удалить</button>\
-	<label :for="list+list.dateCreate">цвет</label>\
-	<input v-model="list.color" type="color" :id="list+list.dateCreate" hidden>\
+'<div :style="styleObject" class="list">\
+	<table class="listHeader"><tr>\
+		<td><input v-model="list.name"></td>\
+		<td>\
+			<button @click="deleteList">-</button>\
+			<label :for="list+list.dateCreate">цвет</label>\
+			<input v-model="list.color" type="color" :id="list+list.dateCreate" hidden>\
+		</td>\
+	</tr></table>\
 	<ol>\
 		<todo-item v-for="pin in list.list" :key="pin.dateCreate" :pin="pin"></todo-item>\
-		<li>\
-			<button @click="addPin">Добавить</button>\
-		</li>\
+		<li><table class="tableList"><tr>\
+			<td class="checkbox"></td>\
+			<td><button @click="addPin">Добавить</button></td>\
+			<td></td>\
+		</table></tr></li>\
 	</ol>\
 	<div>{{(new Date(list.dateCreate)).toLocaleTimeString()}}</div>\
 </div>',
+	computed:
+	{
+		styleObject: function () {
+			return {
+				borderTop: `5px solid ${this.list.color}`,
+			};
+		}
+	},
 	methods:
 	{
 		addPin: function () {
@@ -78,11 +92,11 @@ Vue.component("todo-list", {
 Vue.component("todo-item", {
 	props: ["pin"],
 	template:
-'<li>\
-	<input v-model="pin.check" type="checkbox">\
-	<input v-model="pin.pin" placeholder="Пункт">\
-	<button @click="deletePin">Удалить</button>\
-</li>',
+'<li><table class="tableList"><tr>\
+<td class="checkbox"><input v-model="pin.check" type="checkbox"></td>\
+<td><input v-model="pin.pin" placeholder="Пункт"></td>\
+<td><button @click="deletePin">-</button></td>\
+</tr></table></li>',
 	methods:
 	{
 		deletePin: function () {
@@ -102,6 +116,7 @@ let app = new Vue({
 			this.setList.push({
 				name: this.nameList,
 				dateCreate: +(new Date()),
+				color: "#99ff99",
 				list: [],
 			});
 		}

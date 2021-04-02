@@ -8,13 +8,14 @@
 	<title>Даб 1</title>
 	<script src="js/vue.js" defer></script>
 	<script src="js/main.js" defer></script>
+	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 	<div id="app">
 		<header>
 			<input v-model="nameList" placeholder="Название списка">
-			<button @click="pushGo">Добавить</button>
+			<button @click="pushGo">+</button>
 		</header>
 		<ol>
 			<todo-list v-for="list in setList" :key="list.dateCreate" :list="list"></todo-list>
