@@ -45,40 +45,43 @@ let initSetList = [
 
 let data = {
 	nameList: "",
+	sortType: "Имя",
 	setList: JSON.parse(localStorage.setList || "[]"),
 };
 
 Vue.component("todo-list", {
 	props: ["list"],
 	template:
-'<div :style="styleObject" class="list">\
+'<li :style="styleObject" class="list">\
 	<table class="listHeader">\
 		<tr>\
 			<td><input v-model="list.name"></td>\
 			<td>\
-				<button @click="deleteList">-</button>\
-				<label :for="list+list.dateCreate">цвет</label>\
+				<button @click="deleteList">del</button>\
+			</td>\
+			<td>\
+				<label :for="list+list.dateCreate">clr</label>\
 				<input v-model="list.color" type="color" :id="list+list.dateCreate" hidden>\
 			</td>\
 		</tr>\
 	</table>\
-	<ol>\
+	<transition-group tag="ol" name="pin" class="todoList">\
 		<todo-item v-for="pin in list.list" :key="pin.dateCreate" :pin="pin"></todo-item>\
-		<li><table class="tableList"><tr>\
+		<li key="-1"><table class="tableList"><tr>\
 			<td class="checkbox"></td>\
 			<td><button @click="addPin">Добавить</button></td>\
 			<td></td>\
 		</tr></table></li>\
-	</ol>\
+	</transition-group>\
 	<div>{{(new Date(list.dateCreate)).toLocaleTimeString()}}</div>\
-</div>',
+</li>',
 	computed:
 	{
 		styleObject: function () {
 			return {
 				borderTop: `5px solid ${this.list.color}`,
 			};
-		}
+		},
 	},
 	methods:
 	{
@@ -102,10 +105,10 @@ Vue.component("todo-list", {
 Vue.component("todo-item", {
 	props: ["pin"],
 	template:
-'<li><table class="tableList"><tr>\
+'<li class="pin"><table class="tableList"><tr>\
 <td class="checkbox"><input v-model="pin.check" type="checkbox"></td>\
 <td><input v-model="pin.pin" placeholder="Пункт"></td>\
-<td><button @click="deletePin">-</button></td>\
+<td><button @click="deletePin">del</button></td>\
 </tr></table></li>',
 	methods:
 	{
@@ -123,6 +126,32 @@ Vue.component("todo-item", {
 let app = new Vue({
 	el: "#app",
 	data: data,
+	computed:
+	{
+		sortedList: function () {
+			let out;
+			switch (this.sortType) {
+				case "Время":
+					console.log("\n\nсортировка по времени");
+					out = this.setList.sort((a,b)=>{a.dateCreate - b.dateCreate});
+					break;
+				case "Приоритет":
+				case "Имя":
+					console.log("\n\nсортировка по имени");
+					out = this.setList.sort((a,b)=>{
+						if (a.dateCreate < b.dateCreate) return -1;
+						if (a.dateCreate > b.dateCreate) return 1;
+						return 0;
+					});
+					break;
+			}
+			out.reverse();
+			for (let i = 0; i<out.length; i++){
+				console.log(out[i].name, out[i].dateCreate);
+			}
+			return out;
+		},
+	},
 	methods:
 	{
 		pushGo: function(){

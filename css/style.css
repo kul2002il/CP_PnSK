@@ -10,6 +10,7 @@ body{
 #app{
 	max-width: 500px;
 	margin: 15px auto;
+	position: relative;
 }
 
 header{
@@ -22,7 +23,7 @@ header>*{
 }
 
 header>input{
-	width: calc(100% - 42px);
+	width: calc(100% - 137px);
 }
 
 header>button{
@@ -48,7 +49,6 @@ table{
 }
 
 td{
-	/*border: 1px solid #f4f4f4;*/
 	background-color: white;
 	box-sizing: border-box;
 	height: 35px;
@@ -72,14 +72,15 @@ td>*{
 
 .listHeader td:first-child>*{
 	width: 100%;
+	font-weight: bold;
 }
 
 .listHeader td:last-child{
 	width: 90px;
 }
 
-.listHeader td:last-child>*{
-	width: 35px;
+.listHeader td:nth-child(n+2){
+	width: 40px;
 }
 
 .tableList td>*{
@@ -88,4 +89,43 @@ td>*{
 
 .tableList:last-child td>*{
 	text-align: left;
+}
+
+/* Анимации */
+.list{
+	transition: transform .3s, opacity .3s;
+}
+
+.list-enter, .list-leave-to{
+	opacity: 0;
+	transform: translateX(-1000px);
+}
+
+.list-enter-active, .list-leave-active{
+	position: absolute;
+	right: 0;
+	left: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.todoList{
+	position: relative;
+}
+
+.pin{
+	transition: transform .3s, height .3s;
+	overflow: hidden;
+}
+
+.pin-enter, .pin-leave-to{
+	height: 0;
+}
+
+.pin-enter-active, .pin-leave-active{
+	position: absolute;
+	right: 0;
+	left: 0;
+	margin-top: 0;
+	margin-bottom: 0;
 }

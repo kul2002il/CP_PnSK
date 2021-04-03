@@ -15,11 +15,18 @@
 	<div id="app">
 		<header>
 			<input v-model="nameList" placeholder="Название списка">
-			<button @click="pushGo">+</button>
+			<button @click="pushGo">add</button>
+			<select v-model="sortType">
+				<option>Имя</option>
+				<option>Время</option>
+				<option>Приоритет</option>
+			</select>
 		</header>
-		<ol>
-			<todo-list v-for="list in setList" :key="list.dateCreate" :list="list"></todo-list>
-		</ol>
+		<transition-group tag="ol" name="list">
+			<todo-list v-for="list in sortedList" :key="list.dateCreate" :list="list"
+					v-if="list.name.toLowerCase().indexOf(nameList.toLowerCase())!=-1">
+			</todo-list>
+		</transition-group>
 	</div>
 
 </body>
