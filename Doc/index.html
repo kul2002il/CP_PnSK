@@ -19,10 +19,10 @@
 			<p class="discipline">Специальность 090207 «Информационные системы и программирование»</p>
 
 			<p class="title_work">
-				Отчет по практической работе №1<br/>
+				Отчет по практической работе №4<br/>
 				учебной дисциплины<br/>
 				УП 09 «Программирование на стороне клиента»<br/>
-				Тема: «Создание приложения “Список покупок” на языке
+				Тема: «Создание приложения “Todo – список дел” на языке
 				JavaScript с использованием фреймворка Vue.js»
 			</p>
 
@@ -55,21 +55,25 @@
 
 			<h3>Цель</h3>
 			<p>
-				Научиться основным способам тестирования веб-приложений
+				Научиться создавать веб-приложения на языке
+				JavaScript с использованием фреймворка Vue.js
 			</p>
 			<h3>Задание</h3>
 			<p>
-				Используя полученные ранее знания, реализуйте с помощью Vue
-				простейшее приложение, позволяющее формировать список покупок.
+				Используя полученные ранее знания, реализуйте с помощью Vue проект “Todo - список дел”.
 			</p>
 			<p>
 				Задачи:
 				<ol>
-					<li>ввод имени пользователя</li>
-					<li>добавление нового пункта в список покупок</li>
-					<li>в зависимости от введенных данных формируется список покупок</li>
-					<li>удаление покупки из списка</li>
-					<li>при клике на покупку в списке она отмечается зачеркнутой</li>
+					<li>присутствует разработанный дизайн и адаптивная верстка</li>
+					<li>можно создавать блокноты и списки дел в них</li>
+					<li>можно отмечать выполненные дела, удалять и редактировать заметки и блокноты</li>
+					<li>все данные сохраняются после обновления страницы</li>
+					<li>можно окрашивать блокноты в разные цвета</li>
+					<li>можно осуществлять поиск по заметкам</li>
+					<li>устанавливать приоритет дел в списке</li>
+					<li>сортировать дела по приоритету, названию, дате</li>
+					<li>присутствует анимация интерфейса</li>
 				</ol>
 			</p>
 		</div>
@@ -91,80 +95,322 @@
 	&lt;title&gt;Даб 1&lt;/title&gt;
 	&lt;script src=&quot;js/vue.js&quot; defer&gt;&lt;/script&gt;
 	&lt;script src=&quot;js/main.js&quot; defer&gt;&lt;/script&gt;
+	&lt;link rel=&quot;stylesheet&quot; href=&quot;css/style.css&quot;&gt;
 &lt;/head&gt;
 &lt;body&gt;
-	&lt;div id=&quot;username&quot;&gt;
-		&lt;div v-if=&quot;login&quot;&gt;
-			&lt;h1&gt;Имя пользователя&lt;/h1&gt;
-			&lt;p&gt;(--{{message}}--)&lt;/p&gt;
-			&lt;input v-model=&quot;message&quot;&gt;
-			&lt;button v-on:click=&quot;loginGo&quot;&gt;Вход&lt;/button&gt;
-		&lt;/div&gt;
-		&lt;div v-if=&quot;!login&quot;&gt;
-			&lt;h1&gt;Список пользователя {{message}}.&lt;/h1&gt;
-			&lt;input v-model=&quot;pinToPush&quot;&gt;
-			&lt;button v-on:click=&quot;pushGo&quot;&gt;Добавить&lt;/button&gt;
-			&lt;ol&gt;
-				&lt;todo-item
-						v-for=&quot;item in list&quot;
-						v-bind:todo=&quot;item&quot;
-						v-bind:key=&quot;item.id&quot;
-				&gt;&lt;/todo-item&gt;
-			&lt;/ol&gt;
-		&lt;/div&gt;
+
+	&lt;div id=&quot;app&quot;&gt;
+		&lt;header&gt;
+			&lt;input v-model=&quot;nameList&quot; placeholder=&quot;Название списка&quot;&gt;
+			&lt;button @click=&quot;pushGo&quot;&gt;add&lt;/button&gt;
+			&lt;select v-model=&quot;sortType&quot;&gt;
+				&lt;option&gt;Имя&lt;/option&gt;
+				&lt;option&gt;Время&lt;/option&gt;
+				&lt;option&gt;Приоритет&lt;/option&gt;
+			&lt;/select&gt;
+		&lt;/header&gt;
+		&lt;transition-group tag=&quot;ol&quot; name=&quot;list&quot;&gt;
+			&lt;todo-list v-for=&quot;list in sortedList&quot; :key=&quot;list.dateCreate&quot;
+			:list=&quot;list&quot;
+			v-if=&quot;list.name.toLowerCase().indexOf(nameList.toLowerCase())!=-1&quot;&gt;
+			&lt;/todo-list&gt;
+		&lt;/transition-group&gt;
 	&lt;/div&gt;
+
 &lt;/body&gt;
 &lt;/html&gt;</pre>
 				<p>imdex.html</p>
 			</div>
 
+			<h3>Файл стилей</h3>
+			<div class="img">
+				<pre>
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body{
+	background-color: #f0f0f0;
+}
+
+#app{
+	max-width: 500px;
+	margin: 15px auto;
+	position: relative;
+}
+
+header{
+	padding: 10px;
+	border: 1px solid #d2d2d2;
+}
+
+header>*{
+	height: 25px;
+}
+
+header>input{
+	width: calc(100% - 137px);
+}
+
+header>button{
+	width: 30px;
+	box-sizing: content-box;
+	background-color: transparent;
+	border-radius: 4px;
+}
+
+li{
+	display: block;
+}
+
+.list{
+	margin: 10px;
+	background-color: white;
+	border: 1px solid #c9c9c9;
+}
+
+table{
+	background-color: #f4f4f4;
+	width: 100%;
+}
+
+td{
+	background-color: white;
+	box-sizing: border-box;
+	height: 35px;
+}
+
+.tableList td:first-child{
+	width: 35px;
+	padding: 10px;
+}
+
+.tableList td:last-child{
+	width: 40px;
+}
+
+td>*{
+	padding: 10px;
+	box-sizing: border-box;
+	border: none;
+	background-color: transparent;
+}
+
+.listHeader td>*{
+	width: 100%;
+}
+
+.priority.priority.priority{
+	width: 50px;
+}
+
+.listHeader td:first-child>*{
+	font-weight: bold;
+}
+
+.listHeader td:nth-child(n+2){
+	width: 40px;
+}
+
+.tableList td>*{
+	width: 100%;
+}
+
+.tableList:last-child td>*{
+	text-align: left;
+}
+
+/* Анимации */
+.list{
+	transition: transform .3s, opacity .3s;
+}
+
+.list-enter, .list-leave-to{
+	opacity: 0;
+	transform: translateX(-1000px);
+}
+
+.list-enter-active, .list-leave-active{
+	position: absolute;
+	right: 0;
+	left: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.todoList{
+	position: relative;
+}
+
+.pin{
+	transition: transform .3s, height .3s;
+	overflow: hidden;
+}
+
+.pin-enter, .pin-leave-to{
+	height: 0;
+}
+
+.pin-enter-active, .pin-leave-active{
+	position: absolute;
+	right: 0;
+	left: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+}</pre>
+				<p>style.css</p>
+			</div>
+
 			<h3>Файл главного скрипта</h3>
 			<div class="img">
 				<pre>
-let username = new Vue({
-	el: &quot;#username&quot;,
-	data: {
-		login: true,
-		message: &quot;&quot;,
-		pinToPush: &quot;&quot;,
-		list: [],
+function saveLists()
+{
+	localStorage.setList = JSON.stringify(data.setList);
+}
+
+let data = {
+	nameList: &quot;&quot;,
+	sortType: &quot;Имя&quot;,
+	sortReverse: false,
+	setList: JSON.parse(localStorage.setList || &quot;[]&quot;),
+};
+
+Vue.component(&quot;todo-list&quot;, {
+	props: [&quot;list&quot;],
+	template:
+'&lt;li :style=&quot;styleObject&quot; class=&quot;list&quot;&gt;\
+	&lt;table class=&quot;listHeader&quot;&gt;\
+		&lt;tr&gt;\
+			&lt;td&gt;&lt;input v-model=&quot;list.name&quot;&gt;&lt;/td&gt;\
+			&lt;td class=&quot;priority&quot;&gt;\
+				&lt;input v-model=&quot;list.priority&quot; type=&quot;number&quot;&gt;\
+			&lt;/td&gt;\
+			&lt;td&gt;\
+				&lt;button @click=&quot;deleteList&quot;&gt;del&lt;/button&gt;\
+			&lt;/td&gt;\
+			&lt;td&gt;\
+				&lt;label :for=&quot;list+list.dateCreate&quot;&gt;clr&lt;/label&gt;\
+				&lt;input v-model=&quot;list.color&quot; type=&quot;color&quot;\
+					:id=&quot;list+list.dateCreate&quot; hidden&gt;\
+			&lt;/td&gt;\
+		&lt;/tr&gt;\
+	&lt;/table&gt;\
+	&lt;transition-group tag=&quot;ol&quot; name=&quot;pin&quot; class=&quot;todoList&quot;&gt;\
+		&lt;todo-item v-for=&quot;pin in list.list&quot; :key=&quot;pin.dateCreate&quot; :pin=&quot;pin&quot;&gt;\
+					&lt;/todo-item&gt;\
+		&lt;li key=&quot;-1&quot;&gt;&lt;table class=&quot;tableList&quot;&gt;&lt;tr&gt;\
+			&lt;td class=&quot;checkbox&quot;&gt;&lt;/td&gt;\
+			&lt;td&gt;&lt;button @click=&quot;addPin&quot;&gt;Добавить&lt;/button&gt;&lt;/td&gt;\
+			&lt;td&gt;&lt;/td&gt;\
+		&lt;/tr&gt;&lt;/table&gt;&lt;/li&gt;\
+	&lt;/transition-group&gt;\
+	&lt;div&gt;{{(new Date(list.dateCreate)).toLocaleTimeString()}}&lt;/div&gt;\
+&lt;/li&gt;',
+	computed:
+	{
+		styleObject: function () {
+			return {
+				borderTop: &#x60;5px solid ${this.list.color}&#x60;,
+			};
+		},
 	},
 	methods:
 	{
-		loginGo: function () {
-			this.login = false;
+		addPin: function () {
+			this.list.list.push({
+				check: false,
+				pin: &quot;&quot;,
+				dateCreate: +(new Date()),
+			});
 		},
-		pushGo: function(){
-			this.list.push(this.pinToPush);
-		}
+		deleteList: function () {
+			let index = data.setList.indexOf(this.list);
+			data.setList.splice(index,1);
+		},
+	},
+	updated: function () {
+		saveLists();
 	},
 });
 
 Vue.component(&quot;todo-item&quot;, {
-	props: [&quot;todo&quot;],
-	data: function()
-	{
-		return {
-			exist: true,
-			line: false,
-		}
-	},
+	props: [&quot;pin&quot;],
 	template:
-		'&lt;li v-if=&quot;exist&quot;&gt;' +
-		'&lt;span v-on:click=&quot;lineGo&quot;&gt;' +
-		'&lt;span v-if=&quot;!line&quot;&gt;{{todo}}&lt;/span&gt;' +
-		'&lt;del v-if=&quot;line&quot;&gt;{{todo}}&lt;/del&gt;' +
-		'&lt;/span&gt;' +
-		'&lt;button v-on:click=&quot;deleteGo&quot;&gt;Удалить&lt;/button&gt;' +
-		'&lt;/li&gt;',
+'&lt;li class=&quot;pin&quot;&gt;&lt;table class=&quot;tableList&quot;&gt;&lt;tr&gt;\
+&lt;td class=&quot;checkbox&quot;&gt;&lt;input v-model=&quot;pin.check&quot; type=&quot;checkbox&quot;&gt;&lt;/td&gt;\
+&lt;td&gt;&lt;input v-model=&quot;pin.pin&quot; placeholder=&quot;Пункт&quot;&gt;&lt;/td&gt;\
+&lt;td&gt;&lt;button @click=&quot;deletePin&quot;&gt;del&lt;/button&gt;&lt;/td&gt;\
+&lt;/tr&gt;&lt;/table&gt;&lt;/li&gt;',
 	methods:
 	{
-		deleteGo: function(){
-			this.exist = false;
+		deletePin: function () {
+			let list = this._vnode.parent.context.list;
+			let index = list.list.indexOf(this.pin);
+			list.list.splice(index,1);
 		},
-		lineGo: function(){
-			this.line = !this.line;
+	},
+	updated: function () {
+		saveLists();
+	},
+});
+
+let app = new Vue({
+	el: &quot;#app&quot;,
+	data: data,
+	computed:
+	{
+		sortedList: function () {
+			let out;
+			switch (this.sortType) {
+				case &quot;Время&quot;:
+					out = this.setList.sort((a,b)=&gt;{
+						console.log(a.dateCreate);
+						return a.dateCreate - b.dateCreate;
+					});
+					break;
+				case &quot;Приоритет&quot;:
+					out = this.setList.sort((a,b)=&gt;{
+						return a.priority - b.priority;
+					});
+					break;
+				case &quot;Имя&quot;:
+					out = this.setList.sort((a,b)=&gt;{
+						if (a.name.toLowerCase() &lt; b.name.toLowerCase())
+							return -1;
+						if (a.name.toLowerCase() &gt; b.name.toLowerCase())
+							return 1;
+						return 0;
+					});
+					break;
+			}
+
+			if(this.sortReverse)
+			{
+				out.reverse();
+			}
+
+			return out;
+		},
+	},
+	methods:
+	{
+		pushGo: function(){
+			this.setList.push({
+				name: this.nameList,
+				dateCreate: +(new Date()),
+				color: &quot;#99ff99&quot;,
+				priority: 1,
+				list: [],
+			});
+			let sort = this.sortType;
+			this.sortType = &quot;&quot;;
+			this.sortType = sort;
 		}
+	},
+	updated: function () {
+		saveLists();
 	},
 });</pre>
 				<p>js/main.js</p>
@@ -172,25 +418,46 @@ Vue.component(&quot;todo-item&quot;, {
 		</div>
 		<div>
 			<h2>Результаты работы программы</h2>
-			<h3>Ввод имени пользователя</h3>
+			<h3>Окно приложения</h3>
 			<p>
 				<div class="img">
 					<img src="img/1.png">
-					<p>Ввод имени пользователя</p>
+					<p>Окно приложения</p>
 				</div>
 			</p>
 
-			<h3>Работа со списком</h3>
+			<h3>Описание интерфейса</h3>
 			<p>
 				<div class="img">
 					<img src="img/2.png">
-					<p>Список, с которым работали</p>
-				</div>
-				<div class="img">
-					<img src="img/2.2.png">
-					<p>Удаление элемента</p>
+					<p>Описание интерфейса</p>
 				</div>
 			</p>
+
+			<h3>Полное использование</h3>
+			<p>
+				<div class="img">
+					<img src="img/3.png">
+					<p>Окно приложения</p>
+				</div>
+			</p>
+
+			<h3>Поиск</h3>
+			<p>
+				<div class="img">
+					<img src="img/4.png">
+					<p>Поиск по имени списков</p>
+				</div>
+			</p>
+
+			<h3>Анимации</h3>
+			<p>
+				Анимации сложно передать словами и картинками, но они есть.
+			</p>
+			<p>
+				Анимировано появление, перемещение и удаление списков, а также пунктов списков.
+			</p>
+
 		</div>
 
 		<div>

@@ -97,20 +97,17 @@ let app = new Vue({
 			let out;
 			switch (this.sortType) {
 				case "Время":
-					console.log("\n\nсортировка по времени");
 					out = this.setList.sort((a,b)=>{
 						console.log(a.dateCreate);
 						return a.dateCreate - b.dateCreate;
 					});
 					break;
 				case "Приоритет":
-					console.log("\n\nсортировка по приоритету");
 					out = this.setList.sort((a,b)=>{
 						return a.priority - b.priority;
 					});
 					break;
 				case "Имя":
-					console.log("\n\nсортировка по имени");
 					out = this.setList.sort((a,b)=>{
 						if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
 						if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
@@ -124,9 +121,6 @@ let app = new Vue({
 				out.reverse();
 			}
 
-			for (let i = 0; i<out.length; i++){
-				console.log(out[i].dateCreate);
-			}
 			return out;
 		},
 	},
