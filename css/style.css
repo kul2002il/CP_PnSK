@@ -70,13 +70,16 @@ td>*{
 	background-color: transparent;
 }
 
-.listHeader td:first-child>*{
+.listHeader td>*{
 	width: 100%;
-	font-weight: bold;
 }
 
-.listHeader td:last-child{
-	width: 90px;
+.priority.priority.priority{
+	width: 50px;
+}
+
+.listHeader td:first-child>*{
+	font-weight: bold;
 }
 
 .listHeader td:nth-child(n+2){

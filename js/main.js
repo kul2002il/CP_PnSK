@@ -4,48 +4,10 @@ function saveLists()
 	localStorage.setList = JSON.stringify(data.setList);
 }
 
-let id = +(new Date());
-
-let initSetList = [
-	{
-		name: "Первый список",
-		dateCreate: id,
-		color: "#99ff99",
-		list: [
-			{
-				check: false,
-				pin: "Дело 1",
-				dateCreate: id + 1,
-			},
-			{
-				check: true,
-				pin: "Дело 2",
-				dateCreate: id + 2,
-			},
-		],
-	},
-	{
-		name: "Второй список",
-		dateCreate: id + 3,
-		color: "#9999ff",
-		list: [
-			{
-				check: false,
-				pin: "Дело 1",
-				dateCreate: id + 4,
-			},
-			{
-				check: true,
-				pin: "Дело 2",
-				dateCreate: id + 5,
-			},
-		],
-	},
-];
-
 let data = {
 	nameList: "",
 	sortType: "Имя",
+	sortReverse: false,
 	setList: JSON.parse(localStorage.setList || "[]"),
 };
 
@@ -56,6 +18,9 @@ Vue.component("todo-list", {
 	<table class="listHeader">\
 		<tr>\
 			<td><input v-model="list.name"></td>\
+			<td class="priority">\
+				<input v-model="list.priority" type="number">\
+			</td>\
 			<td>\
 				<button @click="deleteList">del</button>\
 			</td>\
@@ -133,21 +98,34 @@ let app = new Vue({
 			switch (this.sortType) {
 				case "Время":
 					console.log("\n\nсортировка по времени");
-					out = this.setList.sort((a,b)=>{a.dateCreate - b.dateCreate});
+					out = this.setList.sort((a,b)=>{
+						console.log(a.dateCreate);
+						return a.dateCreate - b.dateCreate;
+					});
 					break;
 				case "Приоритет":
+					console.log("\n\nсортировка по приоритету");
+					out = this.setList.sort((a,b)=>{
+						return a.priority - b.priority;
+					});
+					break;
 				case "Имя":
 					console.log("\n\nсортировка по имени");
 					out = this.setList.sort((a,b)=>{
-						if (a.dateCreate < b.dateCreate) return -1;
-						if (a.dateCreate > b.dateCreate) return 1;
+						if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+						if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
 						return 0;
 					});
 					break;
 			}
-			out.reverse();
+
+			if(this.sortReverse)
+			{
+				out.reverse();
+			}
+
 			for (let i = 0; i<out.length; i++){
-				console.log(out[i].name, out[i].dateCreate);
+				console.log(out[i].dateCreate);
 			}
 			return out;
 		},
@@ -159,8 +137,12 @@ let app = new Vue({
 				name: this.nameList,
 				dateCreate: +(new Date()),
 				color: "#99ff99",
+				priority: 1,
 				list: [],
 			});
+			let sort = this.sortType;
+			this.sortType = "";
+			this.sortType = sort;
 		}
 	},
 	updated: function () {
