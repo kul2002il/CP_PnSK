@@ -21,8 +21,9 @@
 <html lang="ru" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
 	<meta charset="UTF-8">
-	<title>Даб 1</title>
+	<title>Front</title>
 	<link rel="stylesheet" href="css/style.css">
+	<script src="js/initFunctions.js" defer></script>
 	<script src="js/vue.js" defer></script>
 	<script src="js/main.js" defer></script>
 	<?php
@@ -36,6 +37,27 @@
 	?>
 </head>
 <body>
+	<nav>
+		<h2>Меню</h2>
+		<ul>
+			<?php
+				foreach($sourсes as $sourсe)
+				{
+					$matches = [];
+					if(preg_match("#apps/(.*)/(.*)\\.html#", $sourсe, $matches))
+					{
+						?>
+						<li>
+							<button onclick='global.state = "<?=$matches[1]?>"'>
+								<?=$matches[1]?>
+							</button>
+						</li>
+						<?php
+					}
+				}
+			?>
+		</ul>
+	</nav>
 	<div id="hostAppCompile">
 		<?php
 			foreach($sourсes as $sourсe)

@@ -1,0 +1,14 @@
+
+nav{
+	border: 1px solid black;
+}
+
+/*
+nav:not(:hover)>ul{
+	display: none;
+}
+/**/
+
+nav>h2{
+	margin: 10px;
+}
