@@ -35,18 +35,20 @@
 	}
 	?>
 </head>
-<body id="hostAppCompile">
-	<?php
-		foreach($sourсes as $sourсe)
-		{
-			$matches = [];
-			if(preg_match("#apps/(.*)/(.*)\\.html#", $sourсe, $matches))
+<body>
+	<div id="hostAppCompile">
+		<?php
+			foreach($sourсes as $sourсe)
 			{
-				echo "<div id='$matches[1]'>";
-				require $sourсe;
-				echo "</div>";
+				$matches = [];
+				if(preg_match("#apps/(.*)/(.*)\\.html#", $sourсe, $matches))
+				{
+					echo "<div v-if='state === \"$matches[1]\"'>";
+					require $sourсe;
+					echo "</div>";
+				}
 			}
-		}
-	?>
+		?>
+	</div>
 </body>
 </html>
