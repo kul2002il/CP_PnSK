@@ -15,7 +15,7 @@
 		return $out;
 	}
 
-	$sourses = read_folder("apps");
+	$sourсes = read_folder("apps");
 ?>
 <!doctype html>
 <html lang="ru" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
@@ -27,11 +27,25 @@
 	<title>Даб 1</title>
 	<script src="js/vue.js" defer></script>
 	<script src="js/main.js" defer></script>
+	<?php
+	foreach($sourсes as $sourсe)
+	{
+		if(preg_match("/(.*)\\.js/", $sourсe))
+		{
+			echo "<script src='$sourсe' defer></script>";
+		}
+	}
+	?>
 </head>
 <body id="hostAppCompile">
 	<?php
-		echo "dir:\n";
-		print_r($sourses);
+		foreach($sourсes as $sourсe)
+		{
+			if(preg_match("#(.*)\\.html#", $sourсe))
+			{
+				require $sourсe;
+			}
+		}
 	?>
 </body>
 </html>
