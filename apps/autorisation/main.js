@@ -6,5 +6,11 @@ let autorisationApp = new Vue(
 	{
 		phone: "",
 		password: "",
-	}
+	},
+	methods:
+	{
+		login: function () {
+			console.log("Вход");
+		}
+	},
 });

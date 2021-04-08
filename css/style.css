@@ -12,3 +12,11 @@ nav:not(:hover)>ul{
 nav>h2{
 	margin: 10px;
 }
+
+body>input{
+	display: none;
+}
+
+body>input:not(:checked)+*{
+	display: none;
+}

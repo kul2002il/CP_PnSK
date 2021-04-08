@@ -48,9 +48,9 @@
 					{
 						?>
 						<li>
-							<button onclick='global.state = "<?=$matches[1]?>"'>
+							<label for='<?=$matches[1]?>'>
 								<?=$matches[1]?>
-							</button>
+							</label>
 						</li>
 						<?php
 					}
@@ -58,19 +58,17 @@
 			?>
 		</ul>
 	</nav>
-	<div id="hostAppCompile">
-		<?php
-			foreach($sourсes as $sourсe)
+	<?php
+		foreach($sourсes as $sourсe)
+		{
+			$matches = [];
+			if(preg_match("#apps/(.*)/(.*)\\.html#", $sourсe, $matches))
 			{
-				$matches = [];
-				if(preg_match("#apps/(.*)/(.*)\\.html#", $sourсe, $matches))
-				{
-					echo "<div v-if='state === \"$matches[1]\"'>";
-					require $sourсe;
-					echo "</div>";
-				}
+				echo "<input type='radio' id='$matches[1]' name='state'><div>";
+				require $sourсe;
+				echo "</div>";
 			}
-		?>
-	</div>
+		}
+	?>
 </body>
 </html>
