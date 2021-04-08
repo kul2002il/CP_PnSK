@@ -23,9 +23,8 @@
 	<meta charset="UTF-8">
 	<title>Front</title>
 	<link rel="stylesheet" href="css/style.css">
-	<script src="js/initFunctions.js" defer></script>
+	<script src="js/startInit.js" defer></script>
 	<script src="js/vue.js" defer></script>
-	<script src="js/main.js" defer></script>
 	<?php
 	foreach($sourсes as $sourсe)
 	{
@@ -35,6 +34,7 @@
 		}
 	}
 	?>
+	<script src="js/endInit.js" defer></script>
 </head>
 <body>
 	<nav>

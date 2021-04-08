@@ -10,7 +10,7 @@ let autorisationApp = new Vue(
 	methods:
 	{
 		login: function () {
-			console.log("Вход");
+			query("login", )
 		}
 	},
 });
