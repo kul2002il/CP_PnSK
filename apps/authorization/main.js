@@ -15,7 +15,10 @@ let authorizationApp = new Vue(
 				phone: this.phone,
 				password: this.password,
 			}, "post")
-			.then(res=>console.log(res));
+			.then(res=>
+			{
+				console.log(res);
+			});
 		},
 	},
 });

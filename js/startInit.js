@@ -12,7 +12,6 @@ function queryClear(url, body, method = "get")
 	{
 		options.body = JSON.stringify(body);
 	}
-	console.log(options);
 	return fetch(url, options);
 }
 
@@ -22,6 +21,27 @@ function query(url, body, method = "get")
 		.then(response => response.json());
 }
 
+
+function changePage(page)
+{
+	document.getElementById(page + "ShowBlock").click();
+}
+
+let thisIsTheMostUniqueVariableNameSoThatNoOneWillAccidentallyRepeatItAndItIsNeededOnlyInOrderToReadUniqueIdentifiers = 0;
+function getID(){
+	return thisIsTheMostUniqueVariableNameSoThatNoOneWillAccidentallyRepeatItAndItIsNeededOnlyInOrderToReadUniqueIdentifiers++;
+}
+
 let global = {
 	token: null,
+	messages: [],
 };
+
+function sendMessage(message)
+{
+	global.messages.push(
+	{
+		id: getID(),
+		text: message,
+	});
+}

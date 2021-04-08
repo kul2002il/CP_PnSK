@@ -48,7 +48,7 @@
 					{
 						?>
 						<li>
-							<label for='<?=$matches[1]?>blockClose'>
+							<label for='<?=$matches[1]?>ShowBlock'>
 								<?=$matches[1]?>
 							</label>
 						</li>
@@ -58,13 +58,18 @@
 			?>
 		</ul>
 	</nav>
+	<div id="globalApp">
+		<ol>
+			<message v-for="message in messages" :key="message.id" :message="message"></message>
+		</ol>
+	</div>
 	<?php
 		foreach($sourсes as $sourсe)
 		{
 			$matches = [];
 			if(preg_match("#apps/(.*)/(.*)\\.html#", $sourсe, $matches))
 			{
-				echo "<input type='radio' id='$matches[1]blockClose' name='state'><div>";
+				echo "<input type='radio' id='$matches[1]ShowBlock' name='state'><div>";
 				require $sourсe;
 				echo "</div>";
 			}
