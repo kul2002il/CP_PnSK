@@ -17,7 +17,6 @@ let authorizationApp = new Vue(
 			}, "post")
 			.then(res=>
 			{
-				console.log(res);
 				if(res.token)
 				{
 					global.token = res.token;

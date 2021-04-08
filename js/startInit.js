@@ -35,7 +35,7 @@ function queryClear(url, body, method = "get")
 	};
 	if (global.token)
 	{
-		options.Authorization = "bearer " + global.token;
+		options.headers.Authorization = "Bearer " + global.token;
 	}
 	if (body)
 	{
