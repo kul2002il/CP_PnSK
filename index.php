@@ -48,7 +48,7 @@
 					{
 						?>
 						<li>
-							<label for='<?=$matches[1]?>'>
+							<label for='<?=$matches[1]?>blockClose'>
 								<?=$matches[1]?>
 							</label>
 						</li>
@@ -64,7 +64,7 @@
 			$matches = [];
 			if(preg_match("#apps/(.*)/(.*)\\.html#", $sourсe, $matches))
 			{
-				echo "<input type='radio' id='$matches[1]' name='state'><div>";
+				echo "<input type='radio' id='$matches[1]blockClose' name='state'><div>";
 				require $sourсe;
 				echo "</div>";
 			}

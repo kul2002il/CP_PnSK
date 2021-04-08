@@ -1,5 +1,5 @@
 
-function quetyClear(url, body, method = "get")
+function queryClear(url, body, method = "get")
 {
 	url = "http://u104386.test-handyhost.ru/api/" + url;
 	let options = {
@@ -8,16 +8,17 @@ function quetyClear(url, body, method = "get")
 			'Content-Type': 'application/json;charset=utf-8',
 		},
 	};
-	if (method.toUpperCase() in ["POST"])
+	if (body)
 	{
 		options.body = JSON.stringify(body);
 	}
+	console.log(options);
 	return fetch(url, options);
 }
 
-function quety(url, body, method = "get")
+function query(url, body, method = "get")
 {
-	return quetyClear(url, body, method = "get")
+	return queryClear(url, body, method)
 		.then(response => response.json());
 }
 
