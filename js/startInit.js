@@ -24,7 +24,7 @@ function sendMessage(message)
 }
 
 
-function queryClear(url, body, method = "get")
+function queryClear(url, body = undefined, method = "get")
 {
 	url = "http://u104386.test-handyhost.ru/api/" + url;
 	let options = {

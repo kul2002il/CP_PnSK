@@ -1,0 +1,27 @@
+<div id="searchUsersApp">
+	<h2>Поиск пользователей</h2>
+	<table class="form">
+		<tr>
+			<td>
+				<input v-model="search" placeholder="Имя, фамилия и/или номер">
+			</td>
+			<td>
+				<button @click="searchGo">Поиск</button>
+			</td>
+		</tr>
+	</table>
+	<table v-if="users[0]">
+		<tr>
+			<th>id</th>
+			<th>Фамилия</th>
+			<th>Имя</th>
+			<th>Телефон</th>
+		</tr>
+		<tr v-for="user in users">
+			<td>{{user.id}}</td>
+			<td>{{user.surname}}</td>
+			<td>{{user.first_name}}</td>
+			<td>{{user.phone}}</td>
+		</tr>
+	</table>
+</div>
