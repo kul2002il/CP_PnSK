@@ -1,0 +1,27 @@
+<div id="getPhotoApp">
+	<h2>Получение фотографий</h2>
+	<button @click="getPhotoGo">Обновить</button>
+	<table v-if="photos[0]">
+		<tr>
+			<th>id</th>
+			<th>Название</th>
+			<th>Ссылка</th>
+			<th>Изображение</th>
+			<th>Владелец, id</th>
+			<th>Зрители, id</th>
+		</tr>
+		<tr v-for="photo in photos">
+			<td>{{photo.id}}</td>
+			<td>{{photo.name}}</td>
+			<td>{{photo.url}}</td>
+			<td><img :src="photo.url" :alt="photo.name"></td>
+			<td>{{photo.owner_id}}</td>
+			<td>
+				<span v-if="photo.users[0]">
+					<span v-for="user in photo.users">{{user}}</span>
+				</span>
+				<span v-else>-</span>
+			</td>
+		</tr>
+	</table>
+</div>
