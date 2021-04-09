@@ -18,3 +18,5 @@ let globalApp = new Vue(
 	el: "#globalApp",
 	data: global,
 });
+
+changePage("main");
