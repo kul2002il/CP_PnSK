@@ -15,7 +15,6 @@ let getPhotoApp = new Vue(
 			{
 				if(res.message === undefined)
 				{
-					sendMessage("Выход успешно выполнен.");
 					this.photos = res
 				}
 				else
