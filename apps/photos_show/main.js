@@ -15,7 +15,7 @@ let getPhotoApp = new Vue(
 			{
 				if(res.message === undefined)
 				{
-					this.photos = res
+					this.photos = res;
 				}
 				else
 				{

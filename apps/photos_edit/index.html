@@ -1,0 +1,31 @@
+<div id="photoEditApp">
+	<h2>Загрузка фото</h2>
+	<table class="form">
+		<tr>
+			<td>ID</td>
+			<td>
+				<input type="number" v-model="id">
+			</td>
+		</tr>
+		<tr>
+			<td>Название</td>
+			<td>
+				<input v-model.number="name">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="photoEditInput">Фото</label>
+			</td>
+			<td>
+				<input id="photoEditInput" type="file" name="photo">
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<button @click="send">Изменить</button>
+			</td>
+		</tr>
+	</table>
+</div>

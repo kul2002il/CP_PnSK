@@ -49,3 +49,18 @@ function query(url, body, method = "get")
 	return queryClear(url, body, method)
 		.then(response => response.json());
 }
+
+
+
+function encodeImageFileAsBase64(element) {
+	return new Promise(resolve => {
+		var file = element.files[0];
+		var reader = new FileReader();
+		reader.onloadend = function () {
+			let dataImage = reader.result;
+			dataImage = dataImage.slice(dataImage.indexOf("base64") + 7);
+			resolve(dataImage)
+		};
+		reader.readAsDataURL(file);
+	});
+}
